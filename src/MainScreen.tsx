@@ -1,5 +1,7 @@
 import arrowBackIcon from './assets/arrow_back.svg'; // Import the arrow_back.svg
-import newChatICon from './assets/new_chat.svg';
+import newChatIcon from './assets/new_chat.svg';
+import documentUploadIcon from './assets/document_upload.svg';
+import settingIcon from './assets/setting.svg';
 import React from 'react';
 import ChatInterface from './components/chatbot';
 
@@ -12,6 +14,62 @@ interface SidebarProps {
     title: string;
     items: string[];
 }
+
+interface IconButtonProps {
+    iconSrc: string;
+    buttonName: string;
+}
+
+const IconButton: React.FC<IconButtonProps> = ({ iconSrc, buttonName }) => {
+    return (
+        <div
+            style={{
+                width: '100%', // Full width
+                paddingLeft: '14px', // Equivalent to pl-5
+                borderRadius: '0.5rem', // Equivalent to rounded-lg
+                outline: '1px solid black', // Equivalent to outline
+                display: 'flex', // Use flexbox for row alignment
+                alignItems: 'center', // Center items vertically
+                gap: '8px', // Add 8px gap between icon and text
+                marginTop: '12px',
+            }}
+        >
+            {/* Icon Container */}
+            <div
+                style={{
+                    width: '2rem', // Equivalent to w-8
+                    height: '2rem', // Equivalent to h-8
+                    display: 'flex', // Use flexbox for centering the icon
+                    justifyContent: 'center', // Center horizontally
+                    alignItems: 'center', // Center vertically
+                    opacity: 0.6, // Equivalent to opacity-60
+                }}
+            >
+                <img
+                    src={iconSrc}
+                    alt={buttonName}
+                    style={{
+                        width: '42px', // Equivalent to w-5
+                        height: '42px', // Adjust size as needed
+                        cursor: 'pointer',
+                    }}
+                />
+            </div>
+
+            {/* Text */}
+            <div
+                style={{
+                    color: 'black',
+                    fontSize: '14px', // Equivalent to text-xl
+                    fontWeight: 500, // Equivalent to font-medium
+                    fontFamily: 'Montserrat, sans-serif',
+                }}
+            >
+                {buttonName}
+            </div>
+        </div>
+    );
+};
 
 const MainContent: React.FC<MainContentProps> = () => {
     return (
@@ -54,6 +112,7 @@ const Sidebar: React.FC<SidebarProps> = ({ title, items }) => {
                     alignItems: 'flex-start',
                     gap: '10px',
                     marginBottom: '20px',
+                    padding:'2px'
                 }}
             >
                 {/* CAZE LABS Logo */}
@@ -99,61 +158,19 @@ const Sidebar: React.FC<SidebarProps> = ({ title, items }) => {
                 </div>
 
                 {/* Document Upload Component */}
-                <div
-                    style={{
-                        width: '100%', // Full width
-                        paddingLeft: '14px', // Equivalent to pl-5
-                        borderRadius: '0.5rem', // Equivalent to rounded-lg
-                        outline: '1px solid black', // Equivalent to outline
-                        display: 'flex', // Use flexbox for row alignment
-                        alignItems: 'center', // Center items vertically
-                        gap: '8px', // Add 8px gap between icon and text
-                        marginTop: '28px',
-                    }}
-                >
-                    {/* Icon Container */}
-                    <div
-                        style={{
-                            width: '2rem', // Equivalent to w-8
-                            height: '2rem', // Equivalent to h-8
-                            display: 'flex', // Use flexbox for centering the icon
-                            justifyContent: 'center', // Center horizontally
-                            alignItems: 'center', // Center vertically
-                            opacity: 0.6, // Equivalent to opacity-60
-                        }}
-                    >
-                        <img
-                            src={newChatICon}
-                            alt="New Chat"
-                            style={{
-                                width: '1.25rem', // Equivalent to w-5
-                                height: '1.25rem', // Adjust size as needed
-                                cursor: 'pointer',
-                            }}
-                        />
-                    </div>
-
-                    {/* Text */}
-                    <div
-                        style={{
-                            color: 'black',
-                            fontSize: '14px', // Equivalent to text-xl
-                            fontWeight: 500, // Equivalent to font-medium
-                            fontFamily: 'Montserrat, sans-serif',
-                        }}
-                    >
-                        Document Upload
-                    </div>
+                <div className='MenuBar' style={{
+                    width: '100%', padding: '0px'
+                }}>
+                    <IconButton
+                        iconSrc={newChatIcon}
+                        buttonName="New Chat"
+                    />
+                    <IconButton
+                        iconSrc={documentUploadIcon}
+                        buttonName="Document Upload" />
+                    <IconButton iconSrc={settingIcon} buttonName="Setting" />
                 </div>
             </div>
-
-            {/* Sidebar Items */}
-            <h3>{title}</h3>
-            <ul>
-                {items.map((item, index) => (
-                    <li key={index}>{item}</li>
-                ))}
-            </ul>
         </div>
     );
 };
