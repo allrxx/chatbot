@@ -2,6 +2,7 @@ import arrowBackIcon from './assets/arrow_back.svg'; // Import the arrow_back.sv
 import newChatIcon from './assets/new_chat.svg';
 import documentUploadIcon from './assets/document_upload.svg';
 import settingIcon from './assets/setting.svg';
+import searchIcon from './assets/searchIcon.svg';
 import React from 'react';
 import ChatInterface from './components/chatbot';
 
@@ -19,6 +20,64 @@ interface IconButtonProps {
     iconSrc: string;
     buttonName: string;
 }
+
+interface ChatHeaderProps {
+  title: string;
+}
+
+
+const ChatHeader: React.FC<ChatHeaderProps> = ({ title }) => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          padding: "8px 32px",
+          backgroundColor: "rgba(233, 231, 231, 0.73)",
+          borderRadius: "14px",
+          backdropFilter: "blur(2px)",
+          position: "relative", // Add for z-index context
+          zIndex: 1, // Ensure header stays above other content
+        }}
+      >
+        <div
+          style={{
+            fontSize: "20px",
+            fontWeight: 500,
+            color: "black",
+            letterSpacing: "6px",
+            fontFamily: "'Montserrat', sans-serif",
+            flex: 1, // Take available space
+            textAlign: "center", // Center text properly
+          }}
+        >
+          {title}
+        </div>
+        
+        {/* Icon Wrapper - Added hover state and fixed positioning */}
+        <div
+          style={{
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#E0E0E0",
+            borderRadius: "50%",
+            cursor: "pointer",
+            transition: "background-color 0.2s",
+            flexShrink: 0, // Prevent shrinking
+            marginLeft: "16px", // Add some spacing from title
+          }}
+        >
+          
+          
+        </div>
+      </div>
+    );
+  };
 
 const IconButton: React.FC<IconButtonProps> = ({ iconSrc, buttonName }) => {
     return (
@@ -76,21 +135,23 @@ const MainContent: React.FC<MainContentProps> = () => {
         <div
             style={{
                 flex: '5 2 0%',
-                padding: '30px 100px',
+                padding: '20px',
                 border: '1px solid #ddd',
                 borderRadius: '16px',
                 background: '#FFFFFF',
                 color: 'black',
                 height: '100%',
-                overflow: 'hidden',
+                gap: "10px",
+                display: 'flex',
+                flexDirection: 'column',
             }}
-        >
+        >   <ChatHeader title="Chat" />
             <ChatInterface />
         </div>
     );
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ title, items }) => {
+const Sidebar: React.FC<SidebarProps> = ({ }) => {
     return (
         <div
             style={{
@@ -111,8 +172,6 @@ const Sidebar: React.FC<SidebarProps> = ({ title, items }) => {
                     flexDirection: 'column',
                     alignItems: 'flex-start',
                     gap: '10px',
-                    marginBottom: '20px',
-                    padding:'2px'
                 }}
             >
                 {/* CAZE LABS Logo */}
@@ -163,11 +222,8 @@ const Sidebar: React.FC<SidebarProps> = ({ title, items }) => {
                 }}>
                     <IconButton
                         iconSrc={newChatIcon}
-                        buttonName="New Chat"
+                        buttonName="New Workspace"
                     />
-                    <IconButton
-                        iconSrc={documentUploadIcon}
-                        buttonName="Document Upload" />
                     <IconButton iconSrc={settingIcon} buttonName="Setting" />
                 </div>
             </div>
@@ -211,5 +267,4 @@ const App: React.FC = () => {
     );
 };
 
-export default App;
 export { App as MainScreen };

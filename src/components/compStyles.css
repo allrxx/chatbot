@@ -1,12 +1,13 @@
 /* Chat Container: Adjusted to account for the fixed navbar */
 
 .chat-container {
+  flex-direction: column;
     width: 100%;
-    height: calc(100vh - 60px); /* Full viewport height minus navbar height */
-    margin-top: 20px; /* Push chat below the navbar */
+    height: calc(100% - 48px); /* Full viewport height minus navbar height */
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0px;
   }
   
   /* Chat Window: Contains messages and input */
@@ -16,6 +17,7 @@
     display: flex;
     flex-direction: column;
     background-color: #fff;
+    padding: 0px;
   }
   
   /* Chat Messages: Scrollable area */
@@ -25,6 +27,7 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
+    padding: 0px;
   }
   
   /* Individual Messages */
