@@ -5,18 +5,12 @@ import documentUploadIcon from './assets/document_upload.svg';
 import settingIcon from './assets/setting.svg';
 import searchIcon from './assets/searchIcon.svg';
 import ChatInterface from './components/chatbot';
-import MedicalUploader from './components/settings';// Adjust path as needed
+import MedicalUploader from './components/settings';
 
-interface MainContentProps {
+// Define a chat session type
+interface ChatSession {
+    id: string;
     title: string;
-    content: string;
-}
-
-interface SidebarProps {
-    title: string;
-    items: string[];
-    onSettingsClick: () => void;
-    onBackClick: () => void;
 }
 
 interface IconButtonProps {
@@ -24,66 +18,6 @@ interface IconButtonProps {
     buttonName: string;
     onClick?: () => void;
 }
-
-interface ChatHeaderProps {
-    title: string;
-}
-
-const ChatHeader: React.FC<ChatHeaderProps> = ({ title }) => {
-    return (
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-                padding: "8px 28px",
-                backgroundColor: "rgba(233, 231, 231, 0.73)",
-                borderRadius: "14px",
-                backdropFilter: "blur(2px)",
-                position: "relative",
-                zIndex: 1,
-            }}
-        >
-            <div
-                style={{
-                    fontSize: "20px",
-                    fontWeight: 500,
-                    color: "black",
-                    letterSpacing: "6px",
-                    fontFamily: "'Montserrat', sans-serif",
-                    flex: 1,
-                    textAlign: "center",
-                }}
-            >
-                {title}
-            </div>
-            <div
-                style={{
-                    width: "40px",
-                    height: "40px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "#E0E0E0",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                    transition: "background-color 0.2s",
-                    flexShrink: 0,
-                    marginLeft: "16px",
-                }}
-            >
-                <img
-                    src={searchIcon}
-                    alt="Search"
-                    width="100%"
-                    height="100%"
-                    style={{ display: "block", margin: "20px auto", padding: "4px" }}
-                />
-            </div>
-        </div>
-    );
-};
 
 const IconButton: React.FC<IconButtonProps> = ({ iconSrc, buttonName, onClick }) => {
     return (
@@ -136,7 +70,71 @@ const IconButton: React.FC<IconButtonProps> = ({ iconSrc, buttonName, onClick })
     );
 };
 
-const MainContent: React.FC<MainContentProps> = () => {
+interface ChatHeaderProps {
+    title: string;
+}
+
+const ChatHeader: React.FC<ChatHeaderProps> = ({ title }) => {
+    return (
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%',
+                padding: '8px 28px',
+                backgroundColor: 'rgba(233, 231, 231, 0.73)',
+                borderRadius: '14px',
+                backdropFilter: 'blur(2px)',
+                position: 'relative',
+                zIndex: 1,
+            }}
+        >
+            <div
+                style={{
+                    fontSize: '20px',
+                    fontWeight: 500,
+                    color: 'black',
+                    letterSpacing: '6px',
+                    fontFamily: "'Montserrat', sans-serif",
+                    flex: 1,
+                    textAlign: 'center',
+                }}
+            >
+                {title}
+            </div>
+            <div
+                style={{
+                    width: '40px',
+                    height: '40px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#E0E0E0',
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s',
+                    flexShrink: 0,
+                    marginLeft: '16px',
+                }}
+            >
+                <img
+                    src={searchIcon}
+                    alt="Search"
+                    width="100%"
+                    height="100%"
+                    style={{ display: 'block', margin: '20px auto', padding: '4px' }}
+                />
+            </div>
+        </div>
+    );
+};
+
+interface MainContentProps {
+    activeChatId: string | null;
+}
+
+const MainContent: React.FC<MainContentProps> = ({ activeChatId }) => {
     return (
         <div
             style={{
@@ -144,21 +142,42 @@ const MainContent: React.FC<MainContentProps> = () => {
                 padding: '28px',
                 border: '1px solid #ddd',
                 borderRadius: '16px',
-                background: '#FFFFFF', // Already white
+                background: '#FFFFFF',
                 color: 'black',
                 height: '100%',
-                gap: "10px",
+                gap: '10px',
                 display: 'flex',
                 flexDirection: 'column',
             }}
         >
             <ChatHeader title="Chat" />
-            <ChatInterface />
+            {activeChatId ? (
+                // Use the activeChatId as a key to force re-mount when a new chat is selected.
+                <ChatInterface key={activeChatId} />
+            ) : (
+                <div>Select a chat session or create a new one.</div>
+            )}
         </div>
     );
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ onSettingsClick, onBackClick }) => {
+interface SidebarProps {
+    chatSessions: ChatSession[];
+    activeChatId: string | null;
+    onNewChat: () => void;
+    onChatSelect: (id: string) => void;
+    onSettingsClick: () => void;
+    onBackClick: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({
+    chatSessions,
+    activeChatId,
+    onNewChat,
+    onChatSelect,
+    onSettingsClick,
+    onBackClick,
+}) => {
     return (
         <div
             style={{
@@ -215,15 +234,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onSettingsClick, onBackClick }) => {
                         fontWeight: 'lighter',
                         fontFamily: 'Noto Sans, sans-serif',
                         letterSpacing: '6px',
-                        alignSelf: 'self-start',
                     }}
                 >
                     MediBot
                 </div>
-                <div className='MenuBar' style={{ width: '100%', padding: '0px' }}>
+                <div style={{ width: '100%', padding: '0px' }}>
                     <IconButton
                         iconSrc={newChatIcon}
                         buttonName="New Workspace"
+                        onClick={onNewChat}
                     />
                     <IconButton
                         iconSrc={settingIcon}
@@ -231,13 +250,82 @@ const Sidebar: React.FC<SidebarProps> = ({ onSettingsClick, onBackClick }) => {
                         onClick={onSettingsClick}
                     />
                 </div>
+                {/* Render the list of chat sessions */}
+                <div 
+                    style={{ 
+                        marginTop: '20px', 
+                        width: '100%',
+                        maxHeight: '300px',  // Limit height to make it scrollable 
+                        overflowY: 'auto',   // Make it scrollable
+                        padding: '0px',
+                    }}
+                >
+                    {chatSessions.map((session) => (
+                        <div
+                            key={session.id}
+                            onClick={() => onChatSelect(session.id)}
+                            style={{
+                                width: '100%',
+                                padding: '8px 14px',   // Reduced padding
+                                borderRadius: '0.25rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                marginTop: '4px',      // Reduced margin
+                                background: activeChatId === session.id ? '#efeded' : 'transparent',
+                                border: 'none',
+                                cursor: 'pointer',
+                                transition: 'background-color 0.2s',
+                                color: '#333',
+                                fontFamily: 'Noto Sans, sans-serif',
+                                fontSize: '14px',
+                                // Remove outline
+                            }}
+                            onMouseEnter={(e) => {
+                                if (activeChatId !== session.id) {
+                                    e.currentTarget.style.backgroundColor = 'aliceblue';
+                                }
+                            }}
+                            onMouseLeave={(e) => {
+                                if (activeChatId !== session.id) {
+                                    e.currentTarget.style.backgroundColor = 'transparent';
+                                }
+                            }}
+                        >
+                            {session.title}
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
 };
 
 const App: React.FC = () => {
+    // Initialize with a default chat session
+    const [chatSessions, setChatSessions] = useState<ChatSession[]>([
+        { id: 'default', title: 'Default Chat' }
+    ]);
+    const [activeChatId, setActiveChatId] = useState<string>('default');
     const [showSettings, setShowSettings] = useState(false);
+
+    // When a new chat is created, add it to the list and set it as active.
+    const handleNewChat = () => {
+        const newChatId = Date.now().toString();
+        const newChatSession: ChatSession = {
+            id: newChatId,
+            title: `Chat ${chatSessions.length + 1}`,
+        };
+        setChatSessions((prev) => [...prev, newChatSession]);
+        setActiveChatId(newChatId);
+        setShowSettings(false);
+    };
+
+    const handleChatSelect = (id: string) => {
+        setActiveChatId(id);
+        setShowSettings(false);
+    };
+
     return (
         <div
             style={{
@@ -245,10 +333,10 @@ const App: React.FC = () => {
                 height: '100vh',
                 fontFamily: 'Arial, sans-serif',
                 display: 'flex',
-                backgroundColor: '#F5F5F5', // Outer app background remains light gray
+                backgroundColor: '#F5F5F5',
                 color: '#fff',
                 overflow: 'hidden',
-                padding: '8px 8px 0px 0px'
+                padding: '8px 8px 0px 0px',
             }}
         >
             <div
@@ -258,23 +346,25 @@ const App: React.FC = () => {
                     gap: '10px',
                     minHeight: 0,
                     padding: '8px 8px 0px 0px',
-                    width: '100%', // Ensure it takes full width
+                    width: '100%',
                 }}
             >
                 <Sidebar
-                    title="Sidebar"
-                    items={['Item 1', 'Item 2', 'Item 3', 'Item 4']}
+                    chatSessions={chatSessions}
+                    activeChatId={activeChatId}
+                    onNewChat={handleNewChat}
+                    onChatSelect={handleChatSelect}
                     onSettingsClick={() => setShowSettings(true)}
                     onBackClick={() => setShowSettings(false)}
                 />
                 {showSettings ? (
                     <div
                         style={{
-                            flex: '5 2 0%', // Match MainContent flex
+                            flex: '5 2 0%',
                             padding: '20px',
                             border: '1px solid #ddd',
                             borderRadius: '16px',
-                            background: '#FFFFFF', // White background for settings
+                            background: '#FFFFFF',
                             color: 'black',
                             height: '100%',
                             display: 'flex',
@@ -284,10 +374,7 @@ const App: React.FC = () => {
                         <MedicalUploader />
                     </div>
                 ) : (
-                    <MainContent
-                        title="Main Content Area"
-                        content="This is the main content area of the webpage. You can replace this with your actual content."
-                    />
+                    <MainContent activeChatId={activeChatId} />
                 )}
             </div>
         </div>
