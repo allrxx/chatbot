@@ -82,12 +82,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ title }) => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 width: '100%',
-                padding: '8px 28px',
-                backgroundColor: 'rgba(233, 231, 231, 0.73)',
-                borderRadius: '14px',
-                backdropFilter: 'blur(2px)',
-                position: 'relative',
-                zIndex: 1,
+                padding: '4px 28px',
+                backgroundColor: 'transparent', // Changed to transparent
             }}
         >
             <div
@@ -190,16 +186,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                 overflow: 'auto',
                 alignSelf: 'flex-start',
                 padding: '20px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between', // Ensures the settings button is at the bottom
             }}
         >
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    gap: '10px',
-                }}
-            >
+            <div>
                 <div
                     style={{
                         position: 'relative',
@@ -238,64 +230,80 @@ const Sidebar: React.FC<SidebarProps> = ({
                 >
                     MediBot
                 </div>
-                <div style={{ width: '100%', padding: '0px' }}>
+                <div style={{ width: '100%', padding: '0px', margin: '60px 0px 0px 0px' }}>
                     <IconButton
                         iconSrc={newChatIcon}
                         buttonName="New Workspace"
                         onClick={onNewChat}
                     />
-                    <IconButton
-                        iconSrc={settingIcon}
-                        buttonName="Setting"
-                        onClick={onSettingsClick}
-                    />
                 </div>
-                {/* Render the list of chat sessions */}
-                <div 
-                    style={{ 
-                        marginTop: '20px', 
-                        width: '100%',
-                        maxHeight: '300px',  // Limit height to make it scrollable 
-                        overflowY: 'auto',   // Make it scrollable
-                        padding: '0px',
-                    }}
-                >
-                    {chatSessions.map((session) => (
-                        <div
-                            key={session.id}
-                            onClick={() => onChatSelect(session.id)}
-                            style={{
-                                width: '100%',
-                                padding: '8px 14px',   // Reduced padding
-                                borderRadius: '0.25rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                marginTop: '4px',      // Reduced margin
-                                background: activeChatId === session.id ? '#efeded' : 'transparent',
-                                border: 'none',
-                                cursor: 'pointer',
-                                transition: 'background-color 0.2s',
-                                color: '#333',
-                                fontFamily: 'Noto Sans, sans-serif',
-                                fontSize: '14px',
-                                // Remove outline
-                            }}
-                            onMouseEnter={(e) => {
-                                if (activeChatId !== session.id) {
-                                    e.currentTarget.style.backgroundColor = 'aliceblue';
-                                }
-                            }}
-                            onMouseLeave={(e) => {
-                                if (activeChatId !== session.id) {
-                                    e.currentTarget.style.backgroundColor = 'transparent';
-                                }
-                            }}
-                        >
-                            {session.title}
-                        </div>
-                    ))}
+                {/* Recent Chats Section */}
+                <div style={{ marginTop: '20px' }}>
+                    <div
+                        style={{
+                            textAlign: 'start',
+                            fontWeight: 'bold',
+                            fontSize: '18px',
+                            marginBottom: '10px',
+                            color: '#333',
+                        }}
+                    >
+                        Recent
+                    </div>
+                    <div
+                        style={{
+                            width: '100%',
+                            maxHeight: '300px', // Limit height to make it scrollable
+                            overflowY: 'auto', // Enable scrolling
+                            padding: '0px',
+                            scrollbarWidth: 'thin', // For Firefox
+                            scrollbarColor: '#c4c4c4 transparent', // Thumb and track colors
+                        }}
+                        className="chat-sessions-container" // Add a class for custom scrollbar styling
+                    >
+                        {chatSessions.map((session) => (
+                            <div
+                                key={session.id}
+                                onClick={() => onChatSelect(session.id)}
+                                style={{
+                                    width: '100%',
+                                    padding: '14px 12px', // Increased padding for taller buttons
+                                    borderRadius: '8px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    background: activeChatId === session.id ? '#e6f7ff' : 'transparent',
+                                    border: activeChatId === session.id ? '1px solid #1890ff' : 'none',
+                                    cursor: 'pointer',
+                                    transition: 'background-color 0.3s, border 0.3s',
+                                    color: '#333',
+                                    fontFamily: 'Noto Sans, sans-serif',
+                                    fontSize: '14px',
+                                }}
+                                onMouseEnter={(e) => {
+                                    if (activeChatId !== session.id) {
+                                        e.currentTarget.style.backgroundColor = '#f0f8ff';
+                                    }
+                                }}
+                                onMouseLeave={(e) => {
+                                    if (activeChatId !== session.id) {
+                                        e.currentTarget.style.backgroundColor = 'transparent';
+                                    }
+                                }}
+                            >
+                                {session.title}
+                            </div>
+                        ))}
+                    </div>
                 </div>
+            </div>
+            {/* Settings Button at the Bottom */}
+            <div style={{ width: '100%', padding: '0px', marginTop: '20px' }}>
+                <IconButton
+                    iconSrc={settingIcon}
+                    buttonName="Setting"
+                    onClick={onSettingsClick}
+                />
             </div>
         </div>
     );
