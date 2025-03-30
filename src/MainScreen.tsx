@@ -1,10 +1,11 @@
-import arrowBackIcon from './assets/arrow_back.svg'; // Import the arrow_back.svg
+import React, { useState } from 'react';
+import arrowBackIcon from './assets/arrow_back.svg';
 import newChatIcon from './assets/new_chat.svg';
 import documentUploadIcon from './assets/document_upload.svg';
 import settingIcon from './assets/setting.svg';
 import searchIcon from './assets/searchIcon.svg';
-import React from 'react';
 import ChatInterface from './components/chatbot';
+import MedicalUploader from './components/settings';// Adjust path as needed
 
 interface MainContentProps {
     title: string;
@@ -14,119 +15,124 @@ interface MainContentProps {
 interface SidebarProps {
     title: string;
     items: string[];
+    onSettingsClick: () => void;
+    onBackClick: () => void;
 }
 
 interface IconButtonProps {
     iconSrc: string;
     buttonName: string;
+    onClick?: () => void;
 }
 
 interface ChatHeaderProps {
-  title: string;
+    title: string;
 }
-
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({ title }) => {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          width: "100%",
-          padding: "8px 32px",
-          backgroundColor: "rgba(233, 231, 231, 0.73)",
-          borderRadius: "14px",
-          backdropFilter: "blur(2px)",
-          position: "relative", // Add for z-index context
-          zIndex: 1, // Ensure header stays above other content
-        }}
-      >
-        <div
-          style={{
-            fontSize: "20px",
-            fontWeight: 500,
-            color: "black",
-            letterSpacing: "6px",
-            fontFamily: "'Montserrat', sans-serif",
-            flex: 1, // Take available space
-            textAlign: "center", // Center text properly
-          }}
-        >
-          {title}
-        </div>
-        
-        {/* Icon Wrapper - Added hover state and fixed positioning */}
-        <div
-          style={{
-            width: "40px",
-            height: "40px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#E0E0E0",
-            borderRadius: "50%",
-            cursor: "pointer",
-            transition: "background-color 0.2s",
-            flexShrink: 0, // Prevent shrinking
-            marginLeft: "16px", // Add some spacing from title
-          }}
-        >
-          
-          
-        </div>
-      </div>
-    );
-  };
-
-const IconButton: React.FC<IconButtonProps> = ({ iconSrc, buttonName }) => {
-    return (
         <div
             style={{
-                width: '100%', // Full width
-                paddingLeft: '14px', // Equivalent to pl-5
-                borderRadius: '0.5rem', // Equivalent to rounded-lg
-                outline: '1px solid black', // Equivalent to outline
-                display: 'flex', // Use flexbox for row alignment
-                alignItems: 'center', // Center items vertically
-                gap: '8px', // Add 8px gap between icon and text
-                marginTop: '12px',
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+                padding: "8px 28px",
+                backgroundColor: "rgba(233, 231, 231, 0.73)",
+                borderRadius: "14px",
+                backdropFilter: "blur(2px)",
+                position: "relative",
+                zIndex: 1,
             }}
         >
-            {/* Icon Container */}
             <div
                 style={{
-                    width: '2rem', // Equivalent to w-8
-                    height: '2rem', // Equivalent to h-8
-                    display: 'flex', // Use flexbox for centering the icon
-                    justifyContent: 'center', // Center horizontally
-                    alignItems: 'center', // Center vertically
-                    opacity: 0.6, // Equivalent to opacity-60
+                    fontSize: "20px",
+                    fontWeight: 500,
+                    color: "black",
+                    letterSpacing: "6px",
+                    fontFamily: "'Montserrat', sans-serif",
+                    flex: 1,
+                    textAlign: "center",
+                }}
+            >
+                {title}
+            </div>
+            <div
+                style={{
+                    width: "40px",
+                    height: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "#E0E0E0",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    transition: "background-color 0.2s",
+                    flexShrink: 0,
+                    marginLeft: "16px",
+                }}
+            >
+                <img
+                    src={searchIcon}
+                    alt="Search"
+                    width="100%"
+                    height="100%"
+                    style={{ display: "block", margin: "20px auto", padding: "4px" }}
+                />
+            </div>
+        </div>
+    );
+};
+
+const IconButton: React.FC<IconButtonProps> = ({ iconSrc, buttonName, onClick }) => {
+    return (
+        <button
+            onClick={onClick}
+            style={{
+                width: '100%',
+                paddingLeft: '14px',
+                borderRadius: '0.5rem',
+                outline: '1px solid black',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginTop: '12px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+            }}
+        >
+            <div
+                style={{
+                    width: '2rem',
+                    height: '2rem',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    opacity: 0.6,
                 }}
             >
                 <img
                     src={iconSrc}
                     alt={buttonName}
                     style={{
-                        width: '42px', // Equivalent to w-5
-                        height: '42px', // Adjust size as needed
-                        cursor: 'pointer',
+                        width: '42px',
+                        height: '42px',
                     }}
                 />
             </div>
-
-            {/* Text */}
             <div
                 style={{
                     color: 'black',
-                    fontSize: '14px', // Equivalent to text-xl
-                    fontWeight: 500, // Equivalent to font-medium
+                    fontSize: '14px',
+                    fontWeight: 500,
                     fontFamily: 'Montserrat, sans-serif',
                 }}
             >
                 {buttonName}
             </div>
-        </div>
+        </button>
     );
 };
 
@@ -135,23 +141,24 @@ const MainContent: React.FC<MainContentProps> = () => {
         <div
             style={{
                 flex: '5 2 0%',
-                padding: '20px',
+                padding: '28px',
                 border: '1px solid #ddd',
                 borderRadius: '16px',
-                background: '#FFFFFF',
+                background: '#FFFFFF', // Already white
                 color: 'black',
                 height: '100%',
                 gap: "10px",
                 display: 'flex',
                 flexDirection: 'column',
             }}
-        >   <ChatHeader title="Chat" />
+        >
+            <ChatHeader title="Chat" />
             <ChatInterface />
         </div>
     );
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ }) => {
+const Sidebar: React.FC<SidebarProps> = ({ onSettingsClick, onBackClick }) => {
     return (
         <div
             style={{
@@ -174,7 +181,6 @@ const Sidebar: React.FC<SidebarProps> = ({ }) => {
                     gap: '10px',
                 }}
             >
-                {/* CAZE LABS Logo */}
                 <div
                     style={{
                         position: 'relative',
@@ -198,11 +204,10 @@ const Sidebar: React.FC<SidebarProps> = ({ }) => {
                             height: '38px',
                             cursor: 'pointer',
                         }}
+                        onClick={onBackClick}
                     />
                     CAZE LABS
                 </div>
-
-                {/* MediBot Subtitle */}
                 <div
                     style={{
                         color: '#1a1a1a',
@@ -215,16 +220,16 @@ const Sidebar: React.FC<SidebarProps> = ({ }) => {
                 >
                     MediBot
                 </div>
-
-                {/* Document Upload Component */}
-                <div className='MenuBar' style={{
-                    width: '100%', padding: '0px'
-                }}>
+                <div className='MenuBar' style={{ width: '100%', padding: '0px' }}>
                     <IconButton
                         iconSrc={newChatIcon}
                         buttonName="New Workspace"
                     />
-                    <IconButton iconSrc={settingIcon} buttonName="Setting" />
+                    <IconButton
+                        iconSrc={settingIcon}
+                        buttonName="Setting"
+                        onClick={onSettingsClick}
+                    />
                 </div>
             </div>
         </div>
@@ -232,6 +237,7 @@ const Sidebar: React.FC<SidebarProps> = ({ }) => {
 };
 
 const App: React.FC = () => {
+    const [showSettings, setShowSettings] = useState(false);
     return (
         <div
             style={{
@@ -239,7 +245,7 @@ const App: React.FC = () => {
                 height: '100vh',
                 fontFamily: 'Arial, sans-serif',
                 display: 'flex',
-                backgroundColor: '#F5F5F5',
+                backgroundColor: '#F5F5F5', // Outer app background remains light gray
                 color: '#fff',
                 overflow: 'hidden',
                 padding: '8px 8px 0px 0px'
@@ -251,17 +257,38 @@ const App: React.FC = () => {
                     margin: '0px',
                     gap: '10px',
                     minHeight: 0,
-                    padding: '8px 8px 0px 0px'
+                    padding: '8px 8px 0px 0px',
+                    width: '100%', // Ensure it takes full width
                 }}
             >
                 <Sidebar
                     title="Sidebar"
                     items={['Item 1', 'Item 2', 'Item 3', 'Item 4']}
+                    onSettingsClick={() => setShowSettings(true)}
+                    onBackClick={() => setShowSettings(false)}
                 />
-                <MainContent
-                    title="Main Content Area"
-                    content="This is the main content area of the webpage. You can replace this with your actual content."
-                />
+                {showSettings ? (
+                    <div
+                        style={{
+                            flex: '5 2 0%', // Match MainContent flex
+                            padding: '20px',
+                            border: '1px solid #ddd',
+                            borderRadius: '16px',
+                            background: '#FFFFFF', // White background for settings
+                            color: 'black',
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}
+                    >
+                        <MedicalUploader />
+                    </div>
+                ) : (
+                    <MainContent
+                        title="Main Content Area"
+                        content="This is the main content area of the webpage. You can replace this with your actual content."
+                    />
+                )}
             </div>
         </div>
     );
