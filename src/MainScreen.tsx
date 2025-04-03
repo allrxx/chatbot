@@ -25,7 +25,7 @@ const IconButton: React.FC<IconButtonProps> = ({ iconSrc, buttonName, onClick })
             onClick={onClick}
             style={{
                 width: '100%',
-                paddingLeft: '14px',
+                paddingLeft: '10px 12px',
                 borderRadius: '0.5rem',
                 outline: '1px solid black',
                 display: 'flex',
@@ -164,6 +164,8 @@ interface SidebarProps {
     onChatSelect: (id: string) => void;
     onSettingsClick: () => void;
     onBackClick: () => void;
+    setChatSessions: React.Dispatch<React.SetStateAction<ChatSession[]>>; // Add this
+    setActiveChatId: React.Dispatch<React.SetStateAction<string | null>>; // Add this
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -173,7 +175,16 @@ const Sidebar: React.FC<SidebarProps> = ({
     onChatSelect,
     onSettingsClick,
     onBackClick,
+    setChatSessions,
+    setActiveChatId,
 }) => {
+    const handleDeleteChat = (id: string) => {
+        setChatSessions((prev) => prev.filter((session) => session.id !== id));
+        if (activeChatId === id) {
+            setActiveChatId(null); // Reset active chat if the deleted chat was active
+        }
+    };
+
     return (
         <div
             style={{
@@ -188,7 +199,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 padding: '20px',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between', // Ensures the settings button is at the bottom
+                justifyContent: 'space-between',
             }}
         >
             <div>
@@ -238,13 +249,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                     />
                 </div>
                 {/* Recent Chats Section */}
-                <div style={{ marginTop: '20px' }}>
+                <div className="RecentChat" style={{ marginTop: '20px', padding: '0px' }}>
                     <div
                         style={{
                             textAlign: 'start',
                             fontWeight: 'bold',
-                            fontSize: '18px',
-                            marginBottom: '10px',
+                            fontSize: '16px',
                             color: '#333',
                         }}
                     >
@@ -259,26 +269,28 @@ const Sidebar: React.FC<SidebarProps> = ({
                             scrollbarWidth: 'thin', // For Firefox
                             scrollbarColor: '#c4c4c4 transparent', // Thumb and track colors
                         }}
-                        className="chat-sessions-container" // Add a class for custom scrollbar styling
+                        className="chat-sessions-container"
                     >
                         {chatSessions.map((session) => (
                             <div
                                 key={session.id}
-                                onClick={() => onChatSelect(session.id)}
                                 style={{
                                     width: '100%',
-                                    padding: '14px 12px', // Increased padding for taller buttons
+                                    padding: '10px 12px', // Reduced padding for shorter height
                                     borderRadius: '8px',
                                     display: 'flex',
                                     alignItems: 'center',
+                                    justifyContent: 'space-between', // Space between title and delete button
                                     gap: '8px',
-                                    background: activeChatId === session.id ? '#e6f7ff' : 'transparent',
-                                    border: activeChatId === session.id ? '1px solid #1890ff' : 'none',
+                                    background: activeChatId === session.id ? '#1890ff' : 'transparent', // Vibrant blue background for active chat
+                                    border: activeChatId === session.id ? '1px solid rgba(24, 144, 255, 0.3)' : 'none', // Semi-transparent border for active chat
+                                    boxShadow: activeChatId === session.id ? '0px 4px 8px rgba(24, 144, 255, 0.2)' : 'none', // Subtle shadow for active chat
                                     cursor: 'pointer',
-                                    transition: 'background-color 0.3s, border 0.3s',
-                                    color: '#333',
+                                    transition: 'background-color 0.1s, border 0.3s, box-shadow 0.3s', // Smooth transitions
+                                    color: activeChatId === session.id ? '#fff' : '#333', // White text for active chat
                                     fontFamily: 'Noto Sans, sans-serif',
                                     fontSize: '14px',
+                                    marginBottom: '4px'
                                 }}
                                 onMouseEnter={(e) => {
                                     if (activeChatId !== session.id) {
@@ -291,7 +303,27 @@ const Sidebar: React.FC<SidebarProps> = ({
                                     }
                                 }}
                             >
-                                {session.title}
+                                <div
+                                    onClick={() => onChatSelect(session.id)}
+                                    style={{
+                                        flex: 1,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    {session.title}
+                                </div>
+                                <button
+                                    onClick={() => handleDeleteChat(session.id)}
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        color: '#e74c3c',
+                                    }}
+                                >
+                                    ✖ {/* Delete icon */}
+                                </button>
                             </div>
                         ))}
                     </div>
@@ -314,7 +346,7 @@ const App: React.FC = () => {
     const [chatSessions, setChatSessions] = useState<ChatSession[]>([
         { id: 'default', title: 'Default Chat' }
     ]);
-    const [activeChatId, setActiveChatId] = useState<string>('default');
+    const [activeChatId, setActiveChatId] = useState<string | null>('default');
     const [showSettings, setShowSettings] = useState(false);
 
     // When a new chat is created, add it to the list and set it as active.
@@ -364,6 +396,8 @@ const App: React.FC = () => {
                     onChatSelect={handleChatSelect}
                     onSettingsClick={() => setShowSettings(true)}
                     onBackClick={() => setShowSettings(false)}
+                    setChatSessions={setChatSessions} // Pass this
+                    setActiveChatId={setActiveChatId} // Pass this
                 />
                 {showSettings ? (
                     <div
