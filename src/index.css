@@ -1,4 +1,47 @@
 * {
-    padding: 8px;
+    padding: 0px;
     box-sizing: border-box; /* Ensures padding doesn't affect element size */
   }
+
+/* Light Theme */
+.light {
+  --background-color: #ffffff;      /* White background */
+  --text-color: #000000;            /* Black text */
+  --text-color-secondary: #6c757d; /* Gray for less important text */
+  --border-color: #e5e7eb;          /* Light gray borders */
+  --button-bg: #007bff;             /* Blue button background */
+  --button-text: #ffffff;           /* White button text */
+  --hover-bg: #0057a3;              /* Darker blue for hover */
+  --input-bg: #f8f8f8;              /* Very light gray input background */
+  --input-text: #49454f;            /* Dark gray input text */
+  --secondary-bg: #f5f5f5;          /* Light gray for cards or panels */
+  --accent-color: #007bff;          /* Blue for highlights (matches button) */
+  --error-color: #dc3545;           /* Red for error messages */
+  --success-color: #28a745;         /* Green for success messages */
+  --link-color: #007bff;            /* Blue for hyperlinks */
+  --disabled-bg: #e0e0e0;           /* Light gray for disabled elements */
+  --disabled-text: #a0a0a0;         /* Medium gray for disabled text */
+  --focus-ring-color: var(--accent-color); /* Color for focus outlines/rings */
+}
+
+/* Dark Theme */
+.dark {
+  --background-color: #121212;      /* Very dark gray background */
+  --text-color: #e0e0e0;            /* Light gray text (slightly softer than pure white) */
+  --text-color-secondary: #adb5bd; /* Lighter gray for less important text */
+  --border-color: #333333;          /* Dark gray borders */
+  --button-bg: #1e88e5;             /* Light blue button background */
+  --button-text: #ffffff;           /* White button text */
+  --hover-bg: #1565c0;              /* Darker blue for hover */
+  --input-bg: #1e1e1e;              /* Dark gray input background */
+  --input-text: #e0e0e0;            /* Light gray input text (matches main text) */
+  --secondary-bg: #2a2a2a;          /* Darker gray for cards or panels */
+  --accent-color: #1e88e5;          /* Light blue for highlights (matches button) */
+  --error-color: #ff4d4d;           /* Brighter red for error messages */
+  --success-color: #4caf50;         /* Brighter green for success messages */
+  --link-color: #1e88e5;            /* Light blue for hyperlinks */
+  --disabled-bg: #424242;           /* Medium gray for disabled elements */
+  --disabled-text: #757575;         /* Lighter gray for disabled text */
+  --focus-ring-color: var(--accent-color); /* Color for focus outlines/rings */
+}
+

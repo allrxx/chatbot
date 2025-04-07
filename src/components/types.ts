@@ -1,7 +1,8 @@
 export interface FileData {
   id: string;
   name: string;
+  size: number;
   progress: number;
-  size?: number; // Optional size property
-  type: 'file' | 'url';
+  type: string;
+  status: 'uploading' | 'completed'; // Added status property
 }
