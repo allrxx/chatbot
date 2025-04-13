@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import botIcon from "../assets/react.svg";
-import arrowBackIcon from "../assets/arrow_back.svg";
+import { Send } from 'lucide-react';
 import { ChatMessage } from "./types";
 
 interface ChatInterfaceProps {
@@ -148,31 +148,32 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMessage }
           />
           <button
             onClick={handleSendMessageClick}
+            title="Send Message"
             style={{
-              backgroundColor: "transparent",
+              backgroundColor: "var(--accent-color, #007bff)",
               border: "none",
               cursor: "pointer",
               borderRadius: "50%",
-              padding: "5px",
-              transition: "background-color 0.3s",
+              padding: "8px",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: "var(--button-text, #ffffff)",
+              transition: "background-color 0.2s ease, transform 0.1s ease",
+              width: '36px',
+              height: '36px',
+              flexShrink: 0,
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = "var(--button-hover-bg, aliceblue)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "transparent")
-            }
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "var(--hover-bg, #0057a3)";
+              e.currentTarget.style.transform = 'scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "var(--accent-color, #007bff)";
+              e.currentTarget.style.transform = 'scale(1.0)';
+            }}
           >
-            <span>
-              <img
-                src={arrowBackIcon}
-                alt="Send Icon"
-                style={{
-                  maxWidth: "20px",
-                  transform: "rotate(90deg)",
-                }}
-              />
-            </span>
+            <Send size={18} />
           </button>
         </div>
       </div>
