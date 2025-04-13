@@ -1,32 +1,17 @@
 // MainScreen.tsx
 import React, { useState, useEffect } from 'react';
-
-// --- Mock Icons ---
-const MockIcon = ({ name, size = 20 }: { name: string; size?: number }) => (
-  <div style={{
-    width: size,
-    height: size,
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    border: `1px dashed var(--border-color, grey)`,
-    borderRadius: '4px',
-    marginRight: '5px',
-    fontSize: '12px',
-    color: 'currentColor'
-  }}>
-    {name.substring(0, 1)}
-  </div>
-);
-const ArrowLeftIcon = () => <MockIcon name="ArrowLeft" />;
-const SettingsIcon = () => <MockIcon name="Settings" />;
-const PlusSquareIcon = () => <MockIcon name="NewChat" />;
-const SearchIcon = () => <MockIcon name="Search" />;
-const XIcon = () => <MockIcon name="X" />;
-const ChevronsLeftIcon = () => <MockIcon name="Collapse" />;
-const ChevronsRightIcon = () => <MockIcon name="Expand" />;
-const SunIcon = () => <MockIcon name="Sun" />;
-const MoonIcon = () => <MockIcon name="Moon" />;
+// Import Lucide icons
+import {
+  ArrowLeft,
+  Settings,
+  PlusSquare,
+  Search,
+  X,
+  ChevronsLeft,
+  ChevronsRight,
+  Sun,
+  Moon
+} from 'lucide-react';
 
 // --- Placeholder Components ---
 import ChatInterface from './components/chatbot';
@@ -206,7 +191,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ title, className }) => (
         e.currentTarget.style.color = `var(--text-color-secondary, #666)`;
       }}
     >
-      <SearchIcon />
+      <Search size={18} />
     </button>
   </div>
 );
@@ -294,7 +279,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       className={className}
       style={{
         flexShrink: 0,
-        width: isExpanded ? '300px' : '80px',
+        width: isExpanded ? '270px' : '80px',
         backgroundColor: `var(--secondary-bg, #FFFFFF)`,
         border: `1px solid var(--border-color, #ddd)`,
         color: `var(--text-color, black)`,
@@ -309,28 +294,25 @@ const Sidebar: React.FC<SidebarProps> = ({
         position: 'relative',
       }}
     >
-
       <div style={{ overflowY: 'auto', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <div style={{
-          height: '64px',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: isExpanded ? 'space-between' : 'center',
-          marginBottom: '20px',
-          paddingRight: isExpanded ? '0px' : '0',
-          flexShrink: 0,
-        }}>
-          {isExpanded && (
+        {/* Header Container: Logo + Custom Collapse Button (Expanded Only) */}
+        {isExpanded && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between', // Pushes logo left, button right
+            height: '64px', // Match original logo area height
+            marginBottom: '20px', // Space below header
+            flexShrink: 0,
+          }}>
+            {/* Logo */} 
             <div style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'flex-start',
               justifyContent: 'center',
-              opacity: isExpanded ? 1 : 0,
-              transition: 'opacity 0.2s ease',
-              pointerEvents: isExpanded ? 'auto' : 'none',
               color: `var(--text-color, #1a1a1a)`,
+              // No specific opacity/transition needed here now
             }}>
               <div style={{ fontSize: '24px', fontWeight: 600, fontFamily: 'MuseoModerno, sans-serif', letterSpacing: '0.2rem' }}>
                 CAZE LABS
@@ -339,41 +321,43 @@ const Sidebar: React.FC<SidebarProps> = ({
                 MediBot
               </div>
             </div>
-          )}
 
-          <button
-            onClick={toggleSidebar}
-            title={isExpanded ? "Collapse Sidebar" : "Expand Sidebar"}
-            style={{
-              background: `var(--input-bg, #eee)`,
-              border: `1px solid var(--border-color, #ccc)`,
-              color: `var(--text-color-secondary, #555)`,
-              borderRadius: '50%',
-              width: '30px',
-              height: '30px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s, color 0.2s',
-              flexShrink: 0,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = `var(--button-hover-bg, #e0e0e0)`;
-              e.currentTarget.style.color = `var(--text-color, #000)`;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = `var(--input-bg, #eee)`;
-              e.currentTarget.style.color = `var(--text-color-secondary, #555)`;
-            }}
-          >
-            {isExpanded ? <ChevronsLeftIcon /> : <ChevronsRightIcon />}
-          </button>
-        </div>
+            {/* Custom Collapse Button (Expanded State) */}
+            <button
+              onClick={toggleSidebar}
+              title="Collapse Sidebar"
+              style={{
+                // REMOVED position: 'absolute', top, right, zIndex
+                background: `var(--input-bg, #eee)`,
+                border: `1px solid var(--border-color, #ccc)`,
+                color: `var(--text-color-secondary, #555)`,
+                borderRadius: '6px', // Make it rectangular like IconButton padding
+                width: '34px', // Adjust size as needed
+                height: '34px', 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s, color 0.2s',
+                flexShrink: 0, // Prevent shrinking
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = `var(--button-hover-bg, #e0e0e0)`;
+                e.currentTarget.style.color = `var(--text-color, #000)`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = `var(--input-bg, #eee)`;
+                e.currentTarget.style.color = `var(--text-color-secondary, #555)`;
+              }}
+            >
+              <ChevronsLeft size={18} />
+            </button>
+          </div>
+        )}
 
         {showSettings && (
           <IconButton
-            icon={<ArrowLeftIcon />}
+            icon={<ArrowLeft size={20} />}
             buttonName="Back to Chat"
             onClick={onBackClick}
             isExpanded={isExpanded}
@@ -381,11 +365,21 @@ const Sidebar: React.FC<SidebarProps> = ({
         )}
 
         <IconButton
-          icon={<PlusSquareIcon />}
+          icon={<PlusSquare size={20} />}
           buttonName="New Patient"
           onClick={() => setShowNewWorkspaceDialog(true)}
           isExpanded={isExpanded}
         />
+
+        {/* Toggle IconButton for COLLAPSED state */}
+        {!isExpanded && (
+            <IconButton
+                icon={<ChevronsRight size={20} />} 
+                buttonName={"Expand Sidebar"}
+                onClick={toggleSidebar}
+                isExpanded={isExpanded}
+            />
+        )}
 
         {isExpanded && (
           <div style={{ marginTop: '30px' }}>
@@ -438,14 +432,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.opacity = '1';
-                      e.currentTarget.style.backgroundColor = `var(--error-hover-bg, rgba(220, 53, 69, 0.1))`;
+                      e.currentTarget.style.backgroundColor = `var(--button-hover-bg, rgba(220, 53, 69, 0.1))`;
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.opacity = '0.7';
                       e.currentTarget.style.backgroundColor = 'transparent';
                     }}
                   >
-                    <XIcon />
+                    <X size={16} />
                   </button>
                 </div>
               ))}
@@ -461,14 +455,14 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <div style={{ flexShrink: 0, borderTop: isExpanded ? `1px solid var(--border-color, #ccc)` : 'none', paddingTop: isExpanded ? '10px' : '0' }}>
         <IconButton
-          icon={<SettingsIcon />}
+          icon={<Settings size={20} />}
           buttonName="Settings"
           onClick={onSettingsClick}
           disabled={!activeChatId}
           isExpanded={isExpanded}
         />
         <IconButton
-          icon={theme === 'light' ? <MoonIcon /> : <SunIcon />}
+          icon={theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
           buttonName={theme === 'light' ? "Dark Mode" : "Light Mode"}
           onClick={toggleTheme}
           isExpanded={isExpanded}
@@ -494,7 +488,6 @@ export const MainScreen: React.FC = () => {
   const [workspaceDetails, setWorkspaceDetails] = useState<{ [key: string]: WorkspaceDetails }>({});
   const [showSettings, setShowSettings] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true); // Default to expanded
-  const [showNewWorkspaceDialog, setShowNewWorkspaceDialog] = useState(false);
   // State to hold message history for all chats
   const [chatHistories, setChatHistories] = useState<{ [key: string]: ChatMessage[] }>({});
 

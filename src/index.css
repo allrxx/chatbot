@@ -33,7 +33,8 @@
   --border-color: #333333;          /* Dark gray borders */
   --button-bg: #1e88e5;             /* Light blue button background */
   --button-text: #ffffff;           /* White button text */
-  --hover-bg: #1565c0;              /* Darker blue for hover */
+  --hover-bg: #1565c0;              /* Darker blue for accent button hover */
+  --button-hover-bg: #3a3a3a;        /* Slightly lighter gray for general button hover */
   --input-bg: #1e1e1e;              /* Dark gray input background */
   --input-text: #e0e0e0;            /* Light gray input text (matches main text) */
   --secondary-bg: #2a2a2a;          /* Darker gray for cards or panels */
