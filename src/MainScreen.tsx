@@ -40,6 +40,7 @@ import { FileData } from './components/types';
 interface ChatSession {
   id: string;
   title: string;
+  patientFiles: FileData[];
 }
 
 interface IconButtonProps {
@@ -83,6 +84,16 @@ interface WorkspaceDetails {
   medicalFiles: FileData[];
   patientFiles: FileData[];
 }
+
+// Type for the setter function passed to UploadSection
+type FileDataSetter = React.Dispatch<React.SetStateAction<FileData[]>>;
+
+// Default empty state for workspace details
+const defaultWorkspaceDetails: WorkspaceDetails = {
+  llmPreference: 'offline',
+  medicalFiles: [],
+  patientFiles: [],
+};
 
 // --- Components ---
 
@@ -212,7 +223,7 @@ const MainContent: React.FC<MainContentProps> = ({ activeChatId, className }) =>
     }}
   >
     <ChatHeader title={activeChatId ? `Patient Chat` : "Chat"} className={className} />
-    <div style={{ flexGrow: 1, overflowY: 'auto', padding: '0 28px 20px 28px' }}>
+    <div style={{ flexGrow: 1, overflowY: 'auto', padding: '0' }}>
       {activeChatId ? (
         <ChatInterface key={activeChatId} />
       ) : (
@@ -250,7 +261,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       medicalFiles: workspaceData.files.medical,
       patientFiles: workspaceData.files.patient,
     };
-    setChatSessions((prev) => [...prev, { id: newId, title: newTitle }]);
+    setChatSessions((prev) => [...prev, { id: newId, title: newTitle, patientFiles: workspaceData.files.patient }]);
     setWorkspaceDetails((prev) => ({ ...prev, [newId]: newWorkspace }));
     setActiveChatId(newId);
     setShowNewWorkspaceDialog(false);
@@ -392,7 +403,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     marginBottom: '6px',
                     transition: 'background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease',
                   }}
-                  onMouseEnter={(e) => { if (activeChatId !== s.id) e.currentTarget.style.backgroundColor = `var(--chat-hover-bg, #f0f0f0)`; }}
+                  onMouseEnter={(e) => { if (activeChatId !== s.id) e.currentTarget.style.backgroundColor = `var(--chat-hover-bg,rgb(186, 202, 234))`; }}
                   onMouseLeave={(e) => { if (activeChatId !== s.id) e.currentTarget.style.backgroundColor = 'transparent'; }}
                 >
                   <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1, marginRight: '10px' }}>
@@ -466,25 +477,13 @@ const Sidebar: React.FC<SidebarProps> = ({
 
 export const MainScreen: React.FC = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [chatSessions, setChatSessions] = useState<ChatSession[]>([
-    { id: 'default1', title: 'John Doe - Follow Up' },
-    { id: 'default2', title: 'Jane Smith - Consultation' },
-  ]);
-  const [activeChatId, setActiveChatId] = useState<string | null>(chatSessions[0]?.id || null);
+  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  // Initialize with an empty object, details will be added per chat ID
+  const [workspaceDetails, setWorkspaceDetails] = useState<{ [key: string]: WorkspaceDetails }>({});
   const [showSettings, setShowSettings] = useState(false);
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
-  const [workspaceDetails, setWorkspaceDetails] = useState<{ [key: string]: WorkspaceDetails }>({
-    default1: {
-      llmPreference: 'offline',
-      medicalFiles: [],
-      patientFiles: [],
-    },
-    default2: {
-      llmPreference: 'online',
-      medicalFiles: [],
-      patientFiles: [],
-    },
-  });
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true); // Default to expanded
+  const [showNewWorkspaceDialog, setShowNewWorkspaceDialog] = useState(false);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
@@ -495,11 +494,18 @@ export const MainScreen: React.FC = () => {
   }, [theme]);
 
   const handleLLMPreferenceChange = (preference: 'offline' | 'online') => {
-    if (!activeChatId || !workspaceDetails[activeChatId]) return;
-    setWorkspaceDetails((prev) => ({
-      ...prev,
-      [activeChatId]: { ...prev[activeChatId], llmPreference: preference },
-    }));
+    if (activeChatId && workspaceDetails[activeChatId]) {
+      setWorkspaceDetails(prev => ({
+        ...prev,
+        [activeChatId]: {
+          ...prev[activeChatId], // Keep existing files/other details
+          llmPreference: preference,
+        }
+      }));
+      console.log(`LLM preference for ${activeChatId} updated to: ${preference}`);
+    } else {
+      console.warn("Cannot change LLM preference: No active chat selected or workspace details missing.");
+    }
   };
 
   const handleChatSelect = (id: string) => {
@@ -517,6 +523,49 @@ export const MainScreen: React.FC = () => {
 
   const toggleSidebar = () => {
     setIsSidebarExpanded(!isSidebarExpanded);
+  };
+
+  // Define handlers to update files for the active chat
+  const handleMedicalFilesChange: FileDataSetter = (updater) => {
+    if (activeChatId) { // Only proceed if a chat is active
+      setWorkspaceDetails(prev => {
+        // Get the previous details for the active chat, or default if missing
+        const prevDetails = prev[activeChatId] || defaultWorkspaceDetails;
+        // Calculate new medical files based on the updater function or value
+        const newMedicalFiles = typeof updater === 'function' ? updater(prevDetails.medicalFiles) : updater;
+
+        return {
+          ...prev,
+          [activeChatId]: {
+            ...prevDetails, // Spread previous details
+            medicalFiles: newMedicalFiles, // Update medical files
+          }
+        };
+      });
+    } else {
+      console.warn("Cannot change medical files: No active chat selected.");
+    }
+  };
+
+  const handlePatientFilesChange: FileDataSetter = (updater) => {
+    if (activeChatId) { // Only proceed if a chat is active
+      setWorkspaceDetails(prev => {
+         // Get the previous details for the active chat, or default if missing
+        const prevDetails = prev[activeChatId] || defaultWorkspaceDetails;
+         // Calculate new patient files based on the updater function or value
+        const newPatientFiles = typeof updater === 'function' ? updater(prevDetails.patientFiles) : updater;
+
+        return {
+          ...prev,
+          [activeChatId]: {
+            ...prevDetails, // Spread previous details
+            patientFiles: newPatientFiles, // Update patient files
+          }
+        };
+      });
+    } else {
+      console.warn("Cannot change patient files: No active chat selected.");
+    }
   };
 
   return (
@@ -570,11 +619,11 @@ export const MainScreen: React.FC = () => {
             <MedicalUploader
               onLLMPreferenceChange={handleLLMPreferenceChange}
               className={theme}
-              workspaceDetails={{
-                llmPreference: 'offline',
-                medicalFiles: [],
-                patientFiles: [],
-              }}
+              // Pass the details for the active chat, or default if none/missing
+              workspaceDetails={activeChatId ? workspaceDetails[activeChatId] || defaultWorkspaceDetails : defaultWorkspaceDetails}
+              // Pass file update handlers
+              onMedicalFilesChange={handleMedicalFilesChange}
+              onPatientFilesChange={handlePatientFilesChange}
             />
           </div>
         ) : (

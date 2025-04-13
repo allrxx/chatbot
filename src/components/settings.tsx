@@ -1,6 +1,9 @@
-import React from 'react'; // Import React (useState might not be needed here anymore)
+import React, { useState } from 'react';
 import UploadSection from './UploadSection'; // Assuming this component exists
 import { FileData } from '../components/types'; // Assuming this type exists
+
+// Type for the file setter function expected by UploadSection
+type FileDataSetter = React.Dispatch<React.SetStateAction<FileData[]>>;
 
 // Define the props interface for MedicalUploader
 interface MedicalUploaderProps {
@@ -10,81 +13,87 @@ interface MedicalUploaderProps {
     patientFiles: FileData[];
   };
   onLLMPreferenceChange: (preference: 'offline' | 'online') => void;
-  // Add className prop to allow passing theme ('light' or 'dark')
-  className?: string;
+  // Add handlers for updating file lists
+  onMedicalFilesChange: FileDataSetter;
+  onPatientFilesChange: FileDataSetter;
+  className?: string; // For theme class ('light' or 'dark')
 }
 
 // Define the MedicalUploader functional component
 const MedicalUploader: React.FC<MedicalUploaderProps> = ({
   workspaceDetails,
   onLLMPreferenceChange,
-  className = 'light', // Default to light theme if no class is provided
+  onMedicalFilesChange,
+  onPatientFilesChange,
+  className = 'light',
 }) => {
   // Destructure workspaceDetails for easier access
   const { llmPreference, medicalFiles, patientFiles } = workspaceDetails;
 
-  // Basic button styles using CSS variables - can be moved to a CSS file/module
+  // Local state for UI controls within this component (Settings page)
+  const [medicalInputMethod, setMedicalInputMethod] = useState<'upload' | 'url'>('upload');
+  const [patientInputMethod, setPatientInputMethod] = useState<'upload' | 'url'>('upload');
+  const [medicalUrl, setMedicalUrl] = useState('');
+  const [patientUrl, setPatientUrl] = useState('');
+
+  // Basic button styles using CSS variables
   const buttonBaseStyle: React.CSSProperties = {
     padding: '8px 16px',
     margin: '0 5px',
-    border: `1px solid var(--border-color, #e5e7eb)`, // Use var() with fallback
+    border: `1px solid var(--border-color, #e5e7eb)`, // Theme border color with fallback
     borderRadius: '4px',
     cursor: 'pointer',
     transition: 'background-color 0.2s ease, color 0.2s ease',
     fontSize: '14px',
     fontWeight: 500,
+    backgroundColor: 'transparent', // Default to transparent
+    color: `var(--text-color-secondary, #6c757d)`, // Secondary text color with fallback
   };
 
   // Style for the selected button
   const selectedButtonStyle: React.CSSProperties = {
     ...buttonBaseStyle,
-    backgroundColor: `var(--secondary-bg, #f5f5f5)`, // Use secondary background for selected
-    color: `var(--text-color, #000000)`, // Use primary text color for selected
-    borderColor: `var(--accent-color, #007bff)`, // Use accent color for border
+    backgroundColor: `var(--secondary-bg, #f5f5f5)`, // Secondary background for selected
+    color: `var(--text-color, #000000)`, // Primary text color for selected
+    borderColor: `var(--accent-color, #007bff)`, // Accent color for border
     fontWeight: 600,
   };
 
-  // Style for the non-selected button
-  const normalButtonStyle: React.CSSProperties = {
-    ...buttonBaseStyle,
-    backgroundColor: 'transparent', // Make non-selected transparent
-    color: `var(--text-color-secondary, #6c757d)`, // Use secondary text color
-  };
-
+  // Style for the non-selected button (same as base style but explicit for clarity)
+  const normalButtonStyle: React.CSSProperties = buttonBaseStyle;
 
   return (
-    // Add the theme class ('light' or 'dark') to the root element
-    // This allows the CSS variables defined in your .css file to apply
-    <div className={className} style={{
-        // Use padding for inner spacing instead of relying on parent
+    <div
+      className={className} // Apply theme class ('light' or 'dark')
+      style={{
         padding: '20px',
-        // Allow vertical scrolling if content overflows
         overflowY: 'auto',
-        // Set height to fill container (adjust as needed)
         height: '100%',
-        // Use background variable (optional, if this component needs its own background)
-        // backgroundColor: 'var(--background-color)'
-        color: `var(--text-color, #000000)`, // Set default text color for the component
-     }}>
-
+        color: `var(--text-color, #000000)`, // Primary text color with fallback
+      }}
+    >
       {/* Main Title */}
-      <h1 style={{
-          color: `var(--text-color, #000000)`, // Use text color variable
-          borderBottom: `1px solid var(--border-color, #e5e7eb)`, // Add a separator line
+      <h1
+        style={{
+          color: `var(--text-color, #000000)`, // Theme text color
+          borderBottom: `1px solid var(--border-color, #e5e7eb)`, // Theme border color
           paddingBottom: '10px',
           marginBottom: '20px',
-          fontSize: '24px', // Adjust font size as needed
-       }}>
+          fontSize: '24px',
+        }}
+      >
         Settings
       </h1>
 
       {/* LLM Preference Section */}
       <div style={{ marginBottom: '30px' }}>
-        <h2 style={{
-            color: `var(--text-color, #000000)`, // Use text color variable
+        <h2
+          style={{
+            color: `var(--text-color, #000000)`, // Theme text color
             marginBottom: '10px',
-            fontSize: '18px', // Adjust font size
-         }}>
+            fontSize: '18px',
+          }}
+        >
           LLM Preference
         </h2>
         <div>
@@ -92,9 +101,18 @@ const MedicalUploader: React.FC<MedicalUploaderProps> = ({
           <button
             style={llmPreference === 'offline' ? selectedButtonStyle : normalButtonStyle}
             onClick={() => onLLMPreferenceChange('offline')}
-            // Add hover effect inline (alternatively use CSS classes)
-            onMouseEnter={(e) => { if (llmPreference !== 'offline') e.currentTarget.style.backgroundColor = `var(--secondary-bg, #f5f5f5)`; }}
-            onMouseLeave={(e) => { if (llmPreference !== 'offline') e.currentTarget.style.backgroundColor = 'transparent'; }}
+            onMouseEnter={(e) => {
+              if (llmPreference !== 'offline') {
+                e.currentTarget.style.backgroundColor = `var(--secondary-bg, #f5f5f5)`;
+                e.currentTarget.style.color = `var(--text-color, #000000)`;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (llmPreference !== 'offline') {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = `var(--text-color-secondary, #6c757d)`;
+              }
+            }}
           >
             Offline
           </button>
@@ -102,8 +120,18 @@ const MedicalUploader: React.FC<MedicalUploaderProps> = ({
           <button
             style={llmPreference === 'online' ? selectedButtonStyle : normalButtonStyle}
             onClick={() => onLLMPreferenceChange('online')}
-            onMouseEnter={(e) => { if (llmPreference !== 'online') e.currentTarget.style.backgroundColor = `var(--secondary-bg, #f5f5f5)`; }}
-            onMouseLeave={(e) => { if (llmPreference !== 'online') e.currentTarget.style.backgroundColor = 'transparent'; }}
+            onMouseEnter={(e) => {
+              if (llmPreference !== 'online') {
+                e.currentTarget.style.backgroundColor = `var(--secondary-bg, #f5f5f5)`;
+                e.currentTarget.style.color = `var(--text-color, #000000)`;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (llmPreference !== 'online') {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = `var(--text-color-secondary, #6c757d)`;
+              }
+            }}
           >
             Online
           </button>
@@ -111,35 +139,26 @@ const MedicalUploader: React.FC<MedicalUploaderProps> = ({
       </div>
 
       {/* Upload Sections Wrapper */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-        {/*
-          NOTE: The UploadSection component itself needs to be modified
-          internally to use the CSS variables for its own elements
-          (like titles, file lists, buttons, inputs etc.).
-          The styles applied here are only for the wrapper.
-        */}
+      <div className="settings-upload-sections" style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
         <UploadSection
           title="Uploaded Medical Documents"
           files={medicalFiles}
-          // These functions are disabled in settings view as per original code
-          setFiles={() => { console.log("File changes disabled in settings view."); }}
-          inputMethod="upload" // Assuming 'upload' is the default or only relevant method here
-          setInputMethod={() => {}}
-          url=""
-          setUrl={() => {}}
-          // Pass the theme class down if UploadSection supports it
-          // className={className}
+          setFiles={onMedicalFilesChange}
+          inputMethod={medicalInputMethod}
+          setInputMethod={setMedicalInputMethod}
+          url={medicalUrl}
+          setUrl={setMedicalUrl}
+          className={className}
         />
         <UploadSection
           title="Uploaded Patient Documents"
           files={patientFiles}
-          setFiles={() => { console.log("File changes disabled in settings view."); }}
-          inputMethod="upload"
-          setInputMethod={() => {}}
-          url=""
-          setUrl={() => {}}
-          // Pass the theme class down if UploadSection supports it
-          // className={className}
+          setFiles={onPatientFilesChange}
+          inputMethod={patientInputMethod}
+          setInputMethod={setPatientInputMethod}
+          url={patientUrl}
+          setUrl={setPatientUrl}
+          className={className}
         />
       </div>
     </div>

@@ -45,3 +45,19 @@
   --focus-ring-color: var(--accent-color); /* Color for focus outlines/rings */
 }
 
+/* Optional: Add focus styles for accessibility */
+input[type='text']:focus,
+input[type='url']:focus {
+  border-color: var(--focus-ring-color, #007bff);
+  box-shadow: 0 0 0 2px var(--focus-ring-color-light, rgba(0, 123, 255, 0.25));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .settings-upload-sections {
+    flex-direction: column; /* Stack upload sections vertically on smaller screens */
+  }
+
+  /* You might need more adjustments for specific components */
+}
+

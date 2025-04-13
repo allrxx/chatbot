@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./compStyles.css";
 import botIcon from "../assets/react.svg";
-import arrowBackIcon from "../assets/arrow_back.svg"; // Use the back button icon
+import arrowBackIcon from "../assets/arrow_back.svg";
 
 interface Message {
   sender: string;
@@ -46,13 +45,76 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
   }, [messages]);
 
   return (
-    <div className="chat-container">
-      <div className="chat-window">
-        <div className="chat-messages" ref={messagesEndRef}>
+    <div
+      style={{
+        width: "100%",
+        height: "100%", // Full viewport height minus navbar height
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "0px",
+        backgroundColor: "var(--background-color, #ffffff)", // Theme background
+        color: "var(--text-color, #000000)", // Theme text color
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "var(--background-color, #ffffff)", // Theme background
+          padding: "0px",
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: "15px",
+            padding: "0px",
+            scrollbarWidth: "thin", // For Firefox
+            scrollbarColor: "var(--border-color, #c4c4c4) transparent", // Custom scrollbar
+          }}
+          ref={messagesEndRef}
+        >
           {messages.map((message, index) => (
-            <div key={index} className={`message ${message.sender.toLowerCase()}`}>
+            <div
+              key={index}
+              style={{
+                maxWidth: "80%",
+                padding: "10px 15px",
+                fontSize: "16px",
+                lineHeight: "1.4",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                backgroundColor:
+                  message.sender === "User"
+                    ? "var(--accent-color, #007bff)" // User message background
+                    : "transparent",
+                color:
+                  message.sender === "User"
+                    ? "var(--button-text, #ffffff)" // User message text
+                    : "var(--text-color, #000000)", // Bot message text
+                borderRadius:
+                  message.sender === "User"
+                    ? "10px 10px 0px 10px"
+                    : "10px 10px 10px 0px",
+                alignSelf: message.sender === "User" ? "flex-end" : "flex-start",
+              }}
+            >
               {message.sender !== "User" && (
-                <span className="bot-icon">
+                <span
+                  style={{
+                    display: "inline-block",
+                    padding: "4px",
+                    marginRight: "8px",
+                  }}
+                >
                   <img src={botIcon} alt="Bot Icon" />
                 </span>
               )}
@@ -61,9 +123,8 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
           ))}
         </div>
         <div
-          className="chat-input"
           style={{
-            backgroundColor: "#f8f8f8", // New background color
+            backgroundColor: "var(--input-bg, #f8f8f8)", // Theme input background
             borderRadius: "20px",
             padding: "10px 20px",
             display: "flex",
@@ -83,7 +144,7 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
               backgroundColor: "transparent",
               fontSize: "16px",
               outline: "none",
-              color: "#49454f", // New text color
+              color: "var(--input-text, #49454f)", // Theme input text color
             }}
           />
           <button
@@ -92,25 +153,25 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
               backgroundColor: "transparent",
               border: "none",
               cursor: "pointer",
-              borderRadius: "50%", // Add rounded corners for a circular button
-              padding: "5px", // Add some padding for better spacing
-              transition: "background-color 0.3s", // Smooth transition for hover effect
+              borderRadius: "50%",
+              padding: "5px",
+              transition: "background-color 0.3s",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "aliceblue"; // Hover effect background
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent"; // Reset background on hover out
-            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "var(--button-hover-bg, aliceblue)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "transparent")
+            }
           >
-            <span className="send-icon">
+            <span>
               <img
                 src={arrowBackIcon}
                 alt="Send Icon"
                 style={{
-                  width: "30px", // Increased width for better visibility
-                  height: "30px", // Increased height for better visibility
-                  transform: "rotate(90deg)", // Rotate upwards
+                  maxWidth: "20px",
+
+                  transform: "rotate(90deg)",
                 }}
               />
             </span>
