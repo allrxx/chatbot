@@ -34,8 +34,8 @@ import MedicalUploader from './components/settings';
 import NewWorkspaceDialog from './components/NewWorkspaceDialog';
 
 // --- Types ---
-// Import FileData from a shared types file
-import { FileData } from './components/types';
+// Import FileData and ChatMessage from a shared types file
+import { FileData, ChatMessage } from './components/types';
 
 interface ChatSession {
   id: string;
@@ -59,6 +59,8 @@ interface ChatHeaderProps {
 
 interface MainContentProps {
   activeChatId: string | null;
+  messages: ChatMessage[];
+  onSendMessage: (text: string) => void;
   className?: string;
 }
 
@@ -206,7 +208,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ title, className }) => (
   </div>
 );
 
-const MainContent: React.FC<MainContentProps> = ({ activeChatId, className }) => (
+const MainContent: React.FC<MainContentProps> = ({ activeChatId, messages, onSendMessage, className }) => (
   <div
     className={className}
     style={{
@@ -225,7 +227,10 @@ const MainContent: React.FC<MainContentProps> = ({ activeChatId, className }) =>
     <ChatHeader title={activeChatId ? `Patient Chat` : "Chat"} className={className} />
     <div style={{ flexGrow: 1, overflowY: 'auto', padding: '0' }}>
       {activeChatId ? (
-        <ChatInterface key={activeChatId} />
+        <ChatInterface
+          messages={messages}
+          onSendMessage={onSendMessage}
+        />
       ) : (
         <div style={{ textAlign: 'center', marginTop: '50px', color: `var(--text-color-secondary, #777)` }}>
           Select a patient chat or create a new one.
@@ -484,6 +489,8 @@ export const MainScreen: React.FC = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true); // Default to expanded
   const [showNewWorkspaceDialog, setShowNewWorkspaceDialog] = useState(false);
+  // State to hold message history for all chats
+  const [chatHistories, setChatHistories] = useState<{ [key: string]: ChatMessage[] }>({});
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
@@ -568,6 +575,29 @@ export const MainScreen: React.FC = () => {
     }
   };
 
+  // Handler to add a new message to the active chat's history
+  const handleSendMessage = (text: string) => {
+    if (!activeChatId) return; // Do nothing if no chat is active
+
+    const newMessage: ChatMessage = {
+      id: Date.now().toString(),
+      text,
+      sender: 'user', // Assuming user sends the message for now
+      timestamp: Date.now(),
+    };
+
+    setChatHistories(prev => {
+      const currentHistory = prev[activeChatId] || [];
+      return {
+        ...prev,
+        [activeChatId]: [...currentHistory, newMessage],
+      };
+    });
+
+    // TODO: Add bot response logic here later
+    console.log(`Message sent in ${activeChatId}: ${text}`);
+  };
+
   return (
     <div
       className={theme}
@@ -627,7 +657,13 @@ export const MainScreen: React.FC = () => {
             />
           </div>
         ) : (
-          <MainContent activeChatId={activeChatId} className={theme} />
+          <MainContent
+            activeChatId={activeChatId}
+            // Pass the history for the active chat, or empty array if none
+            messages={activeChatId ? chatHistories[activeChatId] || [] : []}
+            onSendMessage={handleSendMessage} // Pass the send message handler
+            className={theme}
+          />
         )}
       </div>
     </div>

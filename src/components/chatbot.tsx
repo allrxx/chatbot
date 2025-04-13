@@ -1,38 +1,28 @@
 import React, { useState, useRef, useEffect } from "react";
 import botIcon from "../assets/react.svg";
 import arrowBackIcon from "../assets/arrow_back.svg";
+import { ChatMessage } from "./types";
 
-interface Message {
-  sender: string;
-  content: string;
+interface ChatInterfaceProps {
+  messages: ChatMessage[];
+  onSendMessage: (text: string) => void;
 }
 
-const ChatInterface: React.FC = () => {
+const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMessage }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      sender: "Bot",
-      content: `Welcome to the AI Assistant! I can help you with:
-🌐 Web Development - HTML, CSS, JavaScript, React, Node.js
-📊 Data Analysis - Python, Pandas, Data Visualization
-🤖 AI & ML - Machine Learning concepts, TensorFlow, PyTorch
-💼 Professional Services - Resume review, interview prep
-📚 Learning Resources - Tutorial recommendations, documentation help
-
-Ask me anything, and I'll do my best to provide clear explanations and code examples!`,
-    },
-  ]);
   const [newMessage, setNewMessage] = useState<string>("");
 
-  const handleSendMessage = () => {
+  const handleSendMessageClick = () => {
     if (newMessage.trim() !== "") {
-      setMessages([
-        ...messages,
-        { sender: "User", content: newMessage },
-        { sender: "Bot", content: "Hello! How can I help you today?" },
-      ]);
+      onSendMessage(newMessage);
       setNewMessage("");
+    }
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      handleSendMessageClick();
     }
   };
 
@@ -48,14 +38,14 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
     <div
       style={{
         width: "100%",
-        height: "100%", // Full viewport height minus navbar height
+        height: "100%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         padding: "0px",
-        backgroundColor: "var(--background-color, #ffffff)", // Theme background
-        color: "var(--text-color, #000000)", // Theme text color
+        backgroundColor: "var(--background-color, #ffffff)",
+        color: "var(--text-color, #000000)",
       }}
     >
       <div
@@ -64,7 +54,7 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "var(--background-color, #ffffff)", // Theme background
+          backgroundColor: "var(--background-color, #ffffff)",
           padding: "0px",
         }}
       >
@@ -76,14 +66,14 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
             flexDirection: "column",
             gap: "15px",
             padding: "0px",
-            scrollbarWidth: "thin", // For Firefox
-            scrollbarColor: "var(--border-color, #c4c4c4) transparent", // Custom scrollbar
+            scrollbarWidth: "thin",
+            scrollbarColor: "var(--border-color, #c4c4c4) transparent",
           }}
           ref={messagesEndRef}
         >
-          {messages.map((message, index) => (
+          {messages.map((message) => (
             <div
-              key={index}
+              key={message.id}
               style={{
                 maxWidth: "80%",
                 padding: "10px 15px",
@@ -93,21 +83,21 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
                 alignItems: "center",
                 gap: "10px",
                 backgroundColor:
-                  message.sender === "User"
-                    ? "var(--accent-color, #007bff)" // User message background
+                  message.sender === "user"
+                    ? "var(--accent-color, #007bff)"
                     : "transparent",
                 color:
-                  message.sender === "User"
-                    ? "var(--button-text, #ffffff)" // User message text
-                    : "var(--text-color, #000000)", // Bot message text
+                  message.sender === "user"
+                    ? "var(--button-text, #ffffff)"
+                    : "var(--text-color, #000000)",
                 borderRadius:
-                  message.sender === "User"
+                  message.sender === "user"
                     ? "10px 10px 0px 10px"
                     : "10px 10px 10px 0px",
-                alignSelf: message.sender === "User" ? "flex-end" : "flex-start",
+                alignSelf: message.sender === "user" ? "flex-end" : "flex-start",
               }}
             >
-              {message.sender !== "User" && (
+              {message.sender === "bot" && (
                 <span
                   style={{
                     display: "inline-block",
@@ -118,13 +108,14 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
                   <img src={botIcon} alt="Bot Icon" />
                 </span>
               )}
-              {message.content}
+              {message.text}
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
         <div
           style={{
-            backgroundColor: "var(--input-bg, #f8f8f8)", // Theme input background
+            backgroundColor: "var(--input-bg, #f8f8f8)",
             borderRadius: "20px",
             padding: "10px 20px",
             display: "flex",
@@ -137,6 +128,7 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message..."
+            onKeyPress={handleKeyPress}
             style={{
               flexGrow: 1,
               padding: "10px 15px",
@@ -144,11 +136,11 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
               backgroundColor: "transparent",
               fontSize: "16px",
               outline: "none",
-              color: "var(--input-text, #49454f)", // Theme input text color
+              color: "var(--input-text, #49454f)",
             }}
           />
           <button
-            onClick={handleSendMessage}
+            onClick={handleSendMessageClick}
             style={{
               backgroundColor: "transparent",
               border: "none",
@@ -170,7 +162,6 @@ Ask me anything, and I'll do my best to provide clear explanations and code exam
                 alt="Send Icon"
                 style={{
                   maxWidth: "20px",
-
                   transform: "rotate(90deg)",
                 }}
               />
