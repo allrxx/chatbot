@@ -306,63 +306,66 @@ const Sidebar: React.FC<SidebarProps> = ({
         position: 'relative',
       }}
     >
-      <button
-        onClick={toggleSidebar}
-        title={isExpanded ? "Collapse Sidebar" : "Expand Sidebar"}
-        style={{
-          position: 'absolute',
-          top: '15px',
-          right: isExpanded ? '15px' : 'calc(50% - 15px)',
-          transform: isExpanded ? 'none' : 'translateX(50%)',
-          zIndex: 10,
-          background: `var(--input-bg, #eee)`,
-          border: `1px solid var(--border-color, #ccc)`,
-          color: `var(--text-color-secondary, #555)`,
-          borderRadius: '50%',
-          width: '30px',
-          height: '30px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          transition: 'right 0.3s ease, transform 0.3s ease, background-color 0.2s, color 0.2s',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = `var(--button-hover-bg, #e0e0e0)`;
-          e.currentTarget.style.color = `var(--text-color, #000)`;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = `var(--input-bg, #eee)`;
-          e.currentTarget.style.color = `var(--text-color-secondary, #555)`;
-        }}
-      >
-        {isExpanded ? <ChevronsLeftIcon /> : <ChevronsRightIcon />}
-      </button>
 
       <div style={{ overflowY: 'auto', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <div style={{
           height: '64px',
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: isExpanded ? 'flex-start' : 'center',
-          justifyContent: 'center',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: isExpanded ? 'space-between' : 'center',
           marginBottom: '20px',
-          paddingRight: isExpanded ? '40px' : '0',
-          opacity: isExpanded ? 1 : 0,
-          transition: 'opacity 0.2s ease',
-          pointerEvents: isExpanded ? 'auto' : 'none',
-          color: `var(--text-color, #1a1a1a)`,
+          paddingRight: isExpanded ? '0px' : '0',
+          flexShrink: 0,
         }}>
           {isExpanded && (
-            <>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+              opacity: isExpanded ? 1 : 0,
+              transition: 'opacity 0.2s ease',
+              pointerEvents: isExpanded ? 'auto' : 'none',
+              color: `var(--text-color, #1a1a1a)`,
+            }}>
               <div style={{ fontSize: '24px', fontWeight: 600, fontFamily: 'MuseoModerno, sans-serif', letterSpacing: '0.2rem' }}>
                 CAZE LABS
               </div>
               <div style={{ color: `var(--text-color-secondary, #555)`, fontSize: '14px', fontFamily: 'Noto Sans, sans-serif', letterSpacing: '4px', marginTop: '4px' }}>
                 MediBot
               </div>
-            </>
+            </div>
           )}
+
+          <button
+            onClick={toggleSidebar}
+            title={isExpanded ? "Collapse Sidebar" : "Expand Sidebar"}
+            style={{
+              background: `var(--input-bg, #eee)`,
+              border: `1px solid var(--border-color, #ccc)`,
+              color: `var(--text-color-secondary, #555)`,
+              borderRadius: '50%',
+              width: '30px',
+              height: '30px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s, color 0.2s',
+              flexShrink: 0,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = `var(--button-hover-bg, #e0e0e0)`;
+              e.currentTarget.style.color = `var(--text-color, #000)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = `var(--input-bg, #eee)`;
+              e.currentTarget.style.color = `var(--text-color-secondary, #555)`;
+            }}
+          >
+            {isExpanded ? <ChevronsLeftIcon /> : <ChevronsRightIcon />}
+          </button>
         </div>
 
         {showSettings && (

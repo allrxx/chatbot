@@ -61,3 +61,13 @@ input[type='url']:focus {
   /* You might need more adjustments for specific components */
 }
 
+/* Hide scrollbar for dialog content */
+.dialog-scroll-content {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.dialog-scroll-content::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
