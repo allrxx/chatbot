@@ -11,6 +11,7 @@ interface ChatInterfaceProps {
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMessage }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState<string>("");
+  const [isInputWrapperFocused, setIsInputWrapperFocused] = useState(false);
 
   const handleSendMessageClick = () => {
     if (newMessage.trim() !== "") {
@@ -121,14 +122,19 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMessage }
             display: "flex",
             alignItems: "center",
             gap: "10px",
+            boxShadow: isInputWrapperFocused ? `0 0 6px 1px var(--focus-ring-color-light, rgba(0, 123, 255, 0.3))` : 'none',
+            transition: 'box-shadow 0.2s ease-in-out',
           }}
         >
           <input
             type="text"
+            className="chat-input-field"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message..."
             onKeyPress={handleKeyPress}
+            onFocus={() => setIsInputWrapperFocused(true)}
+            onBlur={() => setIsInputWrapperFocused(false)}
             style={{
               flexGrow: 1,
               padding: "10px 15px",
@@ -137,6 +143,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMessage }
               fontSize: "16px",
               outline: "none",
               color: "var(--input-text, #49454f)",
+              boxShadow: 'none !important',
             }}
           />
           <button

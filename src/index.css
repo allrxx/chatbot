@@ -22,6 +22,7 @@
   --disabled-bg: #e0e0e0;           /* Light gray for disabled elements */
   --disabled-text: #a0a0a0;         /* Medium gray for disabled text */
   --focus-ring-color: var(--accent-color); /* Color for focus outlines/rings */
+  --focus-ring-color-light: rgba(0, 123, 255, 0.3); /* Lighter, transparent version for glows */
 }
 
 /* Dark Theme */
@@ -43,13 +44,19 @@
   --disabled-bg: #424242;           /* Medium gray for disabled elements */
   --disabled-text: #757575;         /* Lighter gray for disabled text */
   --focus-ring-color: var(--accent-color); /* Color for focus outlines/rings */
+  --focus-ring-color-light: rgba(30, 136, 229, 0.4); /* Lighter, transparent version for glows (adjust alpha/color for dark) */
 }
 
-/* Optional: Add focus styles for accessibility */
-input[type='text']:focus,
+/* Apply outer glow focus style to text and URL inputs */
+input[type='text']:not(.chat-input-field):focus,
 input[type='url']:focus {
-  border-color: var(--focus-ring-color, #007bff);
-  box-shadow: 0 0 0 2px var(--focus-ring-color-light, rgba(0, 123, 255, 0.25));
+  /* Remove border color change */
+  /* border-color: var(--focus-ring-color, #007bff); */
+  /* Apply the outer glow effect */
+  box-shadow: 0 0 6px 1px var(--focus-ring-color-light, rgba(0, 123, 255, 0.3));
+  outline: none; /* Ensure default outline is removed */
+  /* Add transition for smoothness */
+  transition: box-shadow 0.2s ease-in-out;
 }
 
 /* Responsive adjustments */

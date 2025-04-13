@@ -59,6 +59,7 @@ interface ChatHeaderProps {
 
 interface MainContentProps {
   activeChatId: string | null;
+  chatTitle: string;
   messages: ChatMessage[];
   onSendMessage: (text: string) => void;
   className?: string;
@@ -156,23 +157,25 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ title, className }) => (
       justifyContent: 'space-between',
       alignItems: 'center',
       width: '100%',
-      padding: '10px 28px',
-      backgroundColor: 'transparent',
-      borderBottom: `1px solid var(--border-color, #eee)`,
-      marginBottom: '10px',
+      padding: '12px 24px',
+      backgroundColor: `var(--secondary-bg, #f9f9f9)`,
+      borderRadius: '10px',
       flexShrink: 0,
+      height: '48px',
     }}
   >
+    <div style={{ width: '36px', flexShrink: 0 }}></div>
     <div style={{
-      fontSize: '20px',
-      fontWeight: 600,
-      color: `var(--text-color, black)`,
-      fontFamily: "'Montserrat', sans-serif",
       flex: 1,
       textAlign: 'center',
+      fontSize: '18px',
+      fontWeight: 500,
+      color: `var(--text-color, black)`,
+      fontFamily: "'Noto Sans', sans-serif",
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
+      margin: '0 10px',
     }}>
       {title}
     </div>
@@ -184,13 +187,13 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ title, className }) => (
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: `var(--secondary-bg, #E0E0E0)`,
+        backgroundColor: `transparent`,
         color: `var(--text-color-secondary, #666)`,
         borderRadius: '50%',
         cursor: 'pointer',
         transition: 'background-color 0.2s, color 0.2s',
         flexShrink: 0,
-        border: `1px solid var(--border-color, #ddd)`,
+        border: `none`,
         padding: '6px',
       }}
       onClick={() => console.log("Search clicked")}
@@ -199,7 +202,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ title, className }) => (
         e.currentTarget.style.color = `var(--text-color, #000)`;
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = `var(--secondary-bg, #E0E0E0)`;
+        e.currentTarget.style.backgroundColor = `transparent`;
         e.currentTarget.style.color = `var(--text-color-secondary, #666)`;
       }}
     >
@@ -208,7 +211,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ title, className }) => (
   </div>
 );
 
-const MainContent: React.FC<MainContentProps> = ({ activeChatId, messages, onSendMessage, className }) => (
+const MainContent: React.FC<MainContentProps> = ({ activeChatId, chatTitle, messages, onSendMessage, className }) => (
   <div
     className={className}
     style={{
@@ -224,8 +227,8 @@ const MainContent: React.FC<MainContentProps> = ({ activeChatId, messages, onSen
       padding: '20px', // Already 0, kept as is
     }}
   >
-    <ChatHeader title={activeChatId ? `Patient Chat` : "Chat"} className={className} />
-    <div style={{ flexGrow: 1, overflowY: 'auto', padding: '0' }}>
+    <ChatHeader title={chatTitle} className={className} />
+    <div style={{ flexGrow: 1,padding: '0' }}>
       {activeChatId ? (
         <ChatInterface
           messages={messages}
@@ -495,6 +498,9 @@ export const MainScreen: React.FC = () => {
   // State to hold message history for all chats
   const [chatHistories, setChatHistories] = useState<{ [key: string]: ChatMessage[] }>({});
 
+  // Find the active chat session details
+  const activeChatSession = chatSessions.find(s => s.id === activeChatId);
+
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
@@ -662,6 +668,8 @@ export const MainScreen: React.FC = () => {
         ) : (
           <MainContent
             activeChatId={activeChatId}
+            // Pass the specific chat title or a default
+            chatTitle={activeChatSession?.title || "Chat"}
             // Pass the history for the active chat, or empty array if none
             messages={activeChatId ? chatHistories[activeChatId] || [] : []}
             onSendMessage={handleSendMessage} // Pass the send message handler
