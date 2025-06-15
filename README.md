@@ -1,6 +1,6 @@
 # ChatBot - AI Assistant Chatbot
 
-MediBot is a React-based AI assistant chatbot application built with TypeScript and Vite. It provides an interactive interface for users to ask questions and receive responses from an AI assistant. The project features a clean and responsive UI, leveraging modern web development tools and libraries.
+chatBot is a React-based AI assistant chatbot application built with TypeScript and Vite. It provides an interactive interface for users to ask questions and receive responses from an AI assistant. The project features a clean and responsive UI, leveraging modern web development tools and libraries.
 
 ## Features
 
@@ -48,8 +48,8 @@ Follow these steps to set up the project locally:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/medibot.git
-   cd medibot
+   git clone https://github.com/your-username/chatbot.git
+   cd chatbot
    ```
 
 2. **Install Dependencies**:
@@ -85,7 +85,7 @@ Follow these steps to set up the project locally:
 
 ### 1. `MainScreen.tsx`
 - The main layout of the application, including the sidebar and chat interface.
-- Contains the "CAZE LABS" logo, "MediBot" subtitle, and a placeholder for document upload.
+- Contains the "CAZE LABS" logo, "chatBot" subtitle, and a placeholder for document upload.
 
 ### 2. `chatbot.tsx`
 - Implements the chat interface where users can interact with the AI assistant.
