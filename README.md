@@ -1,4 +1,4 @@
-# MediBot - AI Assistant Chatbot
+# ChatBot - AI Assistant Chatbot
 
 MediBot is a React-based AI assistant chatbot application built with TypeScript and Vite. It provides an interactive interface for users to ask questions and receive responses from an AI assistant. The project features a clean and responsive UI, leveraging modern web development tools and libraries.
 
