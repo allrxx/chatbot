@@ -8,9 +8,10 @@ export interface FileData {
 }
 
 // Interface for a single chat message
-export interface ChatMessage {
+export interface MessageType {
   id: string;
-  text: string;
-  sender: 'user' | 'bot';
-  timestamp: number;
+  ChatResponse: object | string;
+  isUser: boolean;
+  timestamp: Date;
+  imageBase64?: string;
 }

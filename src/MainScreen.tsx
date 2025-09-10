@@ -10,17 +10,19 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Sun,
-  Moon
+  Moon,
 } from 'lucide-react';
+import { Box } from '@mui/material';
 
 // --- Placeholder Components ---
-import ChatInterface from './components/chatbot';
+import Chat from './components/chatbot';
 import MedicalUploader from './components/settings';
 import NewWorkspaceDialog from './components/NewWorkspaceDialog';
 
 // --- Types ---
-// Import FileData and ChatMessage from a shared types file
-import { FileData, ChatMessage } from './components/types';
+// Import FileData and MessageType from a shared types file
+import { FileData, MessageType } from './components/types';
+import { useWorkspace } from './features/workspace/context/WorkspaceContext';
 
 interface ChatSession {
   id: string;
@@ -34,19 +36,6 @@ interface IconButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   isExpanded?: boolean;
-  className?: string;
-}
-
-interface ChatHeaderProps {
-  title: string;
-  className?: string;
-}
-
-interface MainContentProps {
-  activeChatId: string | null;
-  chatTitle: string;
-  messages: ChatMessage[];
-  onSendMessage: (text: string) => void;
   className?: string;
 }
 
@@ -134,100 +123,6 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, buttonName, onClick, disa
   </button>
 );
 
-const ChatHeader: React.FC<ChatHeaderProps> = ({ title, className }) => (
-  <div
-    className={className}
-    style={{
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      width: '100%',
-      padding: '12px 24px',
-      backgroundColor: `var(--secondary-bg, #f9f9f9)`,
-      borderRadius: '10px',
-      flexShrink: 0,
-      height: '48px',
-    }}
-  >
-    <div style={{ width: '36px', flexShrink: 0 }}></div>
-    <div style={{
-      flex: 1,
-      textAlign: 'center',
-      fontSize: '18px',
-      fontWeight: 500,
-      color: `var(--text-color, black)`,
-      fontFamily: "'Noto Sans', sans-serif",
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      margin: '0 10px',
-    }}>
-      {title}
-    </div>
-    <button
-      title="Search Chat"
-      style={{
-        width: '36px',
-        height: '36px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: `transparent`,
-        color: `var(--text-color-secondary, #666)`,
-        borderRadius: '50%',
-        cursor: 'pointer',
-        transition: 'background-color 0.2s, color 0.2s',
-        flexShrink: 0,
-        border: `none`,
-        padding: '6px',
-      }}
-      onClick={() => console.log("Search clicked")}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = `var(--button-hover-bg, #e0e0e0)`;
-        e.currentTarget.style.color = `var(--text-color, #000)`;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = `transparent`;
-        e.currentTarget.style.color = `var(--text-color-secondary, #666)`;
-      }}
-    >
-      <Search size={18} />
-    </button>
-  </div>
-);
-
-const MainContent: React.FC<MainContentProps> = ({ activeChatId, chatTitle, messages, onSendMessage, className }) => (
-  <div
-    className={className}
-    style={{
-      flex: '1 1 0%',
-      border: `1px solid var(--border-color, #ddd)`,
-      borderRadius: '16px',
-      backgroundColor: `var(--background-color, #FFFFFF)`,
-      color: `var(--text-color, black)`,
-      height: '100%', // Changed from calc(100% - 16px)
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden',
-      padding: '20px', // Already 0, kept as is
-    }}
-  >
-    <ChatHeader title={chatTitle} className={className} />
-    <div style={{ flexGrow: 1,padding: '0' }}>
-      {activeChatId ? (
-        <ChatInterface
-          messages={messages}
-          onSendMessage={onSendMessage}
-        />
-      ) : (
-        <div style={{ textAlign: 'center', marginTop: '50px', color: `var(--text-color-secondary, #777)` }}>
-          Select a patient chat or create a new one.
-        </div>
-      )}
-    </div>
-  </div>
-);
-
 const Sidebar: React.FC<SidebarProps> = ({
   chatSessions,
   activeChatId,
@@ -245,6 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   toggleTheme,
 }) => {
   const [showNewWorkspaceDialog, setShowNewWorkspaceDialog] = useState(false);
+  const { setActiveWorkspace } = useWorkspace();
 
   const handleCreateWorkspace = (workspaceData: { name: string; files: { medical: FileData[]; patient: FileData[] } }) => {
     const newId = Date.now().toString();
@@ -257,6 +153,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     setChatSessions((prev) => [...prev, { id: newId, title: newTitle, patientFiles: workspaceData.files.patient }]);
     setWorkspaceDetails((prev) => ({ ...prev, [newId]: newWorkspace }));
     setActiveChatId(newId);
+    setActiveWorkspace({ id: newId, name: newTitle, folders: [] });
     setShowNewWorkspaceDialog(false);
   };
 
@@ -271,6 +168,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     if (activeChatId === id) {
       const remainingSessions = chatSessions.filter(s => s.id !== id);
       setActiveChatId(remainingSessions.length > 0 ? remainingSessions[0].id : null);
+      setActiveWorkspace(remainingSessions.length > 0 ? { id: remainingSessions[0].id, name: remainingSessions[0].title, folders: [] } : null);
     }
   };
 
@@ -315,11 +213,11 @@ const Sidebar: React.FC<SidebarProps> = ({
               // No specific opacity/transition needed here now
             }}>
               <div style={{ fontSize: '24px', fontWeight: 600, fontFamily: 'MuseoModerno, sans-serif', letterSpacing: '0.2rem' }}>
-                CAZE LABS
+                The ChatBot
               </div>
-              <div style={{ color: `var(--text-color-secondary, #555)`, fontSize: '14px', fontFamily: 'Noto Sans, sans-serif', letterSpacing: '4px', marginTop: '4px' }}>
-                MediBot
-              </div>
+              {/* <div style={{ color: `var(--text-color-secondary, #555)`, fontSize: '14px', fontFamily: 'Noto Sans, sans-serif', letterSpacing: '4px', marginTop: '4px' }}>
+                
+              </div> */}
             </div>
 
             {/* Custom Collapse Button (Expanded State) */}
@@ -488,11 +386,8 @@ export const MainScreen: React.FC = () => {
   const [workspaceDetails, setWorkspaceDetails] = useState<{ [key: string]: WorkspaceDetails }>({});
   const [showSettings, setShowSettings] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true); // Default to expanded
-  // State to hold message history for all chats
-  const [chatHistories, setChatHistories] = useState<{ [key: string]: ChatMessage[] }>({});
 
-  // Find the active chat session details
-  const activeChatSession = chatSessions.find(s => s.id === activeChatId);
+  const { setActiveWorkspace } = useWorkspace();
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
@@ -519,6 +414,10 @@ export const MainScreen: React.FC = () => {
 
   const handleChatSelect = (id: string) => {
     setActiveChatId(id);
+    const selectedChat = chatSessions.find(chat => chat.id === id);
+    if (selectedChat) {
+      setActiveWorkspace({ id: selectedChat.id, name: selectedChat.title, folders: [] });
+    }
     setShowSettings(false);
   };
 
@@ -577,33 +476,10 @@ export const MainScreen: React.FC = () => {
     }
   };
 
-  // Handler to add a new message to the active chat's history
-  const handleSendMessage = (text: string) => {
-    if (!activeChatId) return; // Do nothing if no chat is active
-
-    const newMessage: ChatMessage = {
-      id: Date.now().toString(),
-      text,
-      sender: 'user', // Assuming user sends the message for now
-      timestamp: Date.now(),
-    };
-
-    setChatHistories(prev => {
-      const currentHistory = prev[activeChatId] || [];
-      return {
-        ...prev,
-        [activeChatId]: [...currentHistory, newMessage],
-      };
-    });
-
-    // TODO: Add bot response logic here later
-    console.log(`Message sent in ${activeChatId}: ${text}`);
-  };
-
   return (
-    <div
+    <Box
       className={theme}
-      style={{
+      sx={{
         width: '100vw',
         height: '100vh',
         fontFamily: "'Noto Sans', Arial, sans-serif",
@@ -615,7 +491,7 @@ export const MainScreen: React.FC = () => {
         boxSizing: 'border-box',
       }}
     >
-      <div style={{ display: 'flex', gap: '10px', width: '100%', height: '100%' }}>
+      <Box sx={{ display: 'flex', gap: '10px', width: '100%', height: '100%' }}>
         <Sidebar
           chatSessions={chatSessions}
           activeChatId={activeChatId}
@@ -659,18 +535,12 @@ export const MainScreen: React.FC = () => {
             />
           </div>
         ) : (
-          <MainContent
-            activeChatId={activeChatId}
-            // Pass the specific chat title or a default
-            chatTitle={activeChatSession?.title || "Chat"}
-            // Pass the history for the active chat, or empty array if none
-            messages={activeChatId ? chatHistories[activeChatId] || [] : []}
-            onSendMessage={handleSendMessage} // Pass the send message handler
-            className={theme}
-          />
+          <Box sx={{ flex: '1 1 0%', height: '100%' }}>
+            <Chat />
+          </Box>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
