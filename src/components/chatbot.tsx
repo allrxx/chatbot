@@ -9,7 +9,6 @@ import {
     Button,
     Card,
     IconButton,
-    InputAdornment,
     Paper,
     TextField,
     Typography,
@@ -92,21 +91,23 @@ const MessageList: React.FC<MessageListProps> = ({ messages, loading, messagesEn
                         }}
                     >
                         <Typography
-                          component="div"
-                          variant="body1"
-                          sx={{
-                            '& ol': { listStyle: 'decimal', marginLeft: 2, pl: 2 },
-                            '& ul': { listStyle: 'disc', marginLeft: 2, pl: 2 },
-                            '& li': { marginBottom: '0.25em' },
-                            '& h1, & h2, & h3, & h4, & h5, & h6': { marginTop: '0.5em', marginBottom: '0.25em', fontWeight: 'bold' },
-                            '& p': { marginBottom: '0.25em', mt: 0.3 },
-                            '& pre': { backgroundColor: theme.palette.action.hover, padding: '0.5em', overflowX: 'auto', borderRadius: '4px', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }
-                          }}
-                          dangerouslySetInnerHTML={{ __html: getSanitizedHTML(
-                            typeof message.ChatResponse === 'object' && message.ChatResponse !== null && 'response' in message.ChatResponse
-                                ? message.ChatResponse.response
-                                : message.ChatResponse || ''
-                          ) }}
+                            component="div"
+                            variant="body1"
+                            sx={{
+                                '& ol': { listStyle: 'decimal', marginLeft: 2, pl: 2 },
+                                '& ul': { listStyle: 'disc', marginLeft: 2, pl: 2 },
+                                '& li': { marginBottom: '0.25em' },
+                                '& h1, & h2, & h3, & h4, & h5, & h6': { marginTop: '0.5em', marginBottom: '0.25em', fontWeight: 'bold' },
+                                '& p': { marginBottom: '0.25em', mt: 0.3 },
+                                '& pre': { backgroundColor: theme.palette.action.hover, padding: '0.5em', overflowX: 'auto', borderRadius: '4px', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }
+                            }}
+                            dangerouslySetInnerHTML={{
+                                __html: getSanitizedHTML(
+                                    typeof message.ChatResponse === 'object' && message.ChatResponse !== null && 'response' in message.ChatResponse
+                                        ? message.ChatResponse.response
+                                        : message.ChatResponse || ''
+                                )
+                            }}
                         />
                         {typeof message.ChatResponse === 'object' && message.ChatResponse !== null && 'image_base64' in message.ChatResponse && (message.ChatResponse as { image_base64?: string }).image_base64 && (
                             <ChatImage
@@ -122,37 +123,37 @@ const MessageList: React.FC<MessageListProps> = ({ messages, loading, messagesEn
                         )}
                     </Paper>
                     <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        px: 1,
-                        mt: 0.65,
-                        opacity: 0.7,
-                        gap: 0.3
-                      }}
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            px: 1,
+                            mt: 0.65,
+                            opacity: 0.7,
+                            gap: 0.3
+                        }}
                     >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.3 }}>
-                        <IconButton
-                            size="small"
-                            onClick={() => navigator.clipboard.writeText(getMessageContentForCopy(message.ChatResponse))}
-                            sx={{ p: 0.3, fontSize: '0.75rem', borderRadius: '4px', '&:hover': { backgroundColor: theme.palette.action.hover } }}
-                        >
-                        <CopyIcon fontSize="inherit" />
-                        </IconButton>
-                        {message.isUser && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.3 }}>
                             <IconButton
                                 size="small"
-                                onClick={() => handleEditMessage(getMessageContentForCopy(message.ChatResponse))}
+                                onClick={() => navigator.clipboard.writeText(getMessageContentForCopy(message.ChatResponse))}
                                 sx={{ p: 0.3, fontSize: '0.75rem', borderRadius: '4px', '&:hover': { backgroundColor: theme.palette.action.hover } }}
                             >
-                            <EditIcon fontSize="inherit" />
+                                <CopyIcon fontSize="inherit" />
                             </IconButton>
-                        )}
-                      </Box>
-                      <Typography variant="caption" sx={{ opacity: 0.7, fontSize: '0.7rem' }}>
-                        {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </Typography>
+                            {message.isUser && (
+                                <IconButton
+                                    size="small"
+                                    onClick={() => handleEditMessage(getMessageContentForCopy(message.ChatResponse))}
+                                    sx={{ p: 0.3, fontSize: '0.75rem', borderRadius: '4px', '&:hover': { backgroundColor: theme.palette.action.hover } }}
+                                >
+                                    <EditIcon fontSize="inherit" />
+                                </IconButton>
+                            )}
+                        </Box>
+                        <Typography variant="caption" sx={{ opacity: 0.7, fontSize: '0.7rem' }}>
+                            {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </Typography>
                     </Box>
                 </Box>
             ))}
@@ -163,20 +164,20 @@ const MessageList: React.FC<MessageListProps> = ({ messages, loading, messagesEn
                         alignItems: 'center',
                         gap: '8px',
                         '@keyframes bounce': {
-                        '0%, 100%': { transform: 'translateY(0)' },
-                        '50%': { transform: 'translateY(-3px)' },
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-3px)' },
                         },
                     }}
-                    >
+                >
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         Searching Documents
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Box component="span" sx={{ marginTop:'10px', width: '3px', height: '3px', borderRadius: '50%', backgroundColor: 'text.secondary', animation: 'bounce 1.2s infinite ease-in-out' }} />
-                        <Box component="span" sx={{ marginTop:'10px', width: '3px', height: '3px', borderRadius: '50%', backgroundColor: 'text.secondary', animation: 'bounce 1.2s infinite ease-in-out', animationDelay: '0.2s' }} />
-                        <Box component="span" sx={{ marginTop:'10px', width: '3px', height: '3px', borderRadius: '50%', backgroundColor: 'text.secondary', animation: 'bounce 1.2s infinite ease-in-out', animationDelay: '0.4s' }} />
+                        <Box component="span" sx={{ marginTop: '10px', width: '3px', height: '3px', borderRadius: '50%', backgroundColor: 'text.secondary', animation: 'bounce 1.2s infinite ease-in-out' }} />
+                        <Box component="span" sx={{ marginTop: '10px', width: '3px', height: '3px', borderRadius: '50%', backgroundColor: 'text.secondary', animation: 'bounce 1.2s infinite ease-in-out', animationDelay: '0.2s' }} />
+                        <Box component="span" sx={{ marginTop: '10px', width: '3px', height: '3px', borderRadius: '50%', backgroundColor: 'text.secondary', animation: 'bounce 1.2s infinite ease-in-out', animationDelay: '0.4s' }} />
                     </Box>
-                    </Box>
+                </Box>
             )}
             <div ref={messagesEndRef} />
         </Box>
@@ -195,67 +196,62 @@ interface ChatInputProps {
 const ChatInput: React.FC<ChatInputProps> = ({ input, setInput, handleSendMessage, loading }) => {
     const theme = useTheme();
     return (
-        <Box
-          component="form"
-          onSubmit={handleSendMessage}
-          sx={{
-            p: 1.5,
-            borderRadius: 2,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            border: '1px solid',
-            borderColor: 'neutral.border',
-            transition: 'border-color 0.2s ease-in-out',
-            '&:hover': {
-              borderColor: 'text.secondary',
-            },
-            '&:focus-within': {
-              borderColor: 'primary.main',
-            },
-          }}
+        <Paper
+            component="form"
+            onSubmit={handleSendMessage}
+            elevation={3}
+            sx={{
+                p: '2px 4px',
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+                borderRadius: '24px', // Explicit pill shape
+                mb: 1,
+                border: `1px solid ${theme.palette.divider}`,
+                boxShadow: theme.shadows[1],
+                '&:hover': {
+                    boxShadow: theme.shadows[4],
+                },
+                transition: 'box-shadow 0.3s ease-in-out',
+            }}
         >
-          <TextField
-            fullWidth
-            variant="standard"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message here..."
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                handleSendMessage(e);
-              }
-            }}
-            InputProps={{
-              disableUnderline: true,
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    type="submit"
-                    disabled={loading || !input.trim()}
-                    sx={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: '50%',
-                      transition: 'background-color 0.3s ease',
-                      backgroundColor: theme.palette.secondary.main,
-                      color: theme.palette.secondary.contrastText,
-                      '&:hover': {
-                        backgroundColor: theme.palette.secondary.dark,
-                      },
-                      '&.Mui-disabled': {
-                        backgroundColor: theme.palette.action.disabledBackground,
-                        color: theme.palette.action.disabled,
-                      },
-                    }}
-                  >
-                    {loading ? <Stop sx={{ fontSize: 20 }} /> : <ArrowUpward sx={{ fontSize: 20 }} />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
+            <TextField
+                fullWidth
+                variant="standard"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type your message..."
+                multiline
+                maxRows={4}
+                onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage(e);
+                    }
+                }}
+                InputProps={{
+                    disableUnderline: true,
+                    sx: {
+                        px: 2,
+                        py: 1.5,
+                        fontSize: '0.95rem'
+                    }
+                }}
+            />
+            <IconButton
+                type="submit"
+                disabled={loading || !input.trim()}
+                color="primary"
+                sx={{
+                    p: '10px',
+                    mr: 0.5,
+                    alignSelf: 'flex-end',
+                    mb: 0.5
+                }}
+            >
+                {loading ? <Stop /> : <ArrowUpward />}
+            </IconButton>
+        </Paper>
     );
 };
 
@@ -281,10 +277,10 @@ const Chat: React.FC<ChatProps> = () => {
     const handleSendMessage = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!input.trim()) return;
-        
+
         const messageToSend = input.trim();
         setInput('');
-        
+
         try {
             await sendMessage(currentWorkspaceId, messageToSend);
         } catch (error) {
@@ -349,23 +345,23 @@ const Chat: React.FC<ChatProps> = () => {
                         </Box>
                     </Box>
 
-                    <MemoizedMessageList 
-                        messages={messages} 
-                        loading={loading} 
+                    <MemoizedMessageList
+                        messages={messages}
+                        loading={loading}
                         messagesEndRef={messagesEndRef}
                         handleEditMessage={handleEditMessage}
                     />
                     <Box
-                    sx={{px:2}}
+                        sx={{ px: 2 }}
                     >
-                      <ChatInput 
-                        input={input}
-                        setInput={setInput}
-                        handleSendMessage={handleSendMessage}
-                        loading={loading}
-                    />
+                        <ChatInput
+                            input={input}
+                            setInput={setInput}
+                            handleSendMessage={handleSendMessage}
+                            loading={loading}
+                        />
                     </Box>
-                    
+
                 </Card>
             </Box>
         </>

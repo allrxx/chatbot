@@ -2,14 +2,17 @@ import './App.css'; // Import CSS
 import { MainScreen } from './MainScreen';
 import { WorkspaceProvider } from './features/workspace/context/WorkspaceContext';
 import { ChatHistoryProvider } from './features/chat/context/ChatHistoryContext';
+import { AppThemeProvider } from './themeContext';
 
 function App() {
   return (
-    <WorkspaceProvider>
-      <ChatHistoryProvider>
-        <MainScreen />
-      </ChatHistoryProvider>
-    </WorkspaceProvider>
+    <AppThemeProvider>
+      <WorkspaceProvider>
+        <ChatHistoryProvider>
+          <MainScreen />
+        </ChatHistoryProvider>
+      </WorkspaceProvider>
+    </AppThemeProvider>
   );
 }
 

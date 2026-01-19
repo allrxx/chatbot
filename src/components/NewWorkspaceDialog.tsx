@@ -3,18 +3,16 @@ import UploadSection from './UploadSection'; // Assuming this component exists a
 import { FileData } from '../components/types'; // Assuming this type exists
 
 // Define the props interface for NewWorkspaceDialog
+// Define the props interface for NewWorkspaceDialog
 interface NewWorkspaceDialogProps {
   onClose: () => void;
   onCreate: (workspaceData: { name: string; files: { medical: FileData[]; patient: FileData[] } }) => void;
-  // Add className prop to allow passing theme ('light' or 'dark')
-  className?: string;
 }
 
 // Define the NewWorkspaceDialog functional component
 const NewWorkspaceDialog: React.FC<NewWorkspaceDialogProps> = ({
   onClose,
   onCreate,
-  className = 'light', // Default to light theme
 }) => {
   // State for the dialog inputs
   const [name, setName] = useState('');
@@ -64,11 +62,7 @@ const NewWorkspaceDialog: React.FC<NewWorkspaceDialogProps> = ({
     transition: 'background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease',
   };
 
-  const secondaryButtonHoverStyle: React.CSSProperties = {
-      backgroundColor: `var(--secondary-bg, #f5f5f5)`, // Use secondary bg on hover
-      borderColor: `var(--text-color-secondary, #6c757d)`, // Darken border slightly on hover
-      color: `var(--text-color, #000000)`, // Use primary text color on hover
-  };
+
 
 
   return (
@@ -76,7 +70,7 @@ const NewWorkspaceDialog: React.FC<NewWorkspaceDialogProps> = ({
     <div
       // Apply theme class potentially for backdrop variable if defined,
       // but rgba(0,0,0,0.5) is often theme-independent
-      className={className}
+
       style={{
         position: 'fixed',
         top: 0,
@@ -96,7 +90,7 @@ const NewWorkspaceDialog: React.FC<NewWorkspaceDialogProps> = ({
       {/* Dialog Content Box */}
       <div
         // Apply theme class here to activate variables within the dialog
-        className={className}
+
         style={{
           backgroundColor: `var(--background-color, #ffffff)`, // Use background variable
           color: `var(--text-color, #000000)`, // Default text color for dialog
@@ -125,26 +119,26 @@ const NewWorkspaceDialog: React.FC<NewWorkspaceDialogProps> = ({
         >
           {/* Dialog Title */}
           <h2 style={{
-              marginBottom: '0', // Remove default margin, use gap instead
-              paddingBottom: '16px', // Space below title
-              textAlign: 'center',
-              fontSize: '1.5rem', // Larger title
-              fontWeight: 600,
-              color: `var(--text-color, #000000)`, // Use text color variable
-              borderBottom: `1px solid var(--border-color, #e5e7eb)` // Separator line
-           }}>
-              New Patient Workspace
+            marginBottom: '0', // Remove default margin, use gap instead
+            paddingBottom: '16px', // Space below title
+            textAlign: 'center',
+            fontSize: '1.5rem', // Larger title
+            fontWeight: 600,
+            color: `var(--text-color, #000000)`, // Use text color variable
+            borderBottom: `1px solid var(--border-color, #e5e7eb)` // Separator line
+          }}>
+            New Patient Workspace
           </h2>
 
           {/* Name Input Section */}
           <div>
             <label htmlFor="workspaceName" style={{
-                display: 'block',
-                marginBottom: '8px',
-                fontSize: '14px',
-                fontWeight: 500,
-                color: `var(--text-color, #000000)` // Use text color
-             }}>
+              display: 'block',
+              marginBottom: '8px',
+              fontSize: '14px',
+              fontWeight: 500,
+              color: `var(--text-color, #000000)` // Use text color
+            }}>
               Patient Name
             </label>
             <input
@@ -182,7 +176,7 @@ const NewWorkspaceDialog: React.FC<NewWorkspaceDialogProps> = ({
                 setInputMethod={setMedicalInputMethod}
                 url={medicalUrl}
                 setUrl={setMedicalUrl}
-                className={className} // Pass theme class down
+
               />
             </div>
             {/* Patient Documents Upload */}
@@ -195,33 +189,33 @@ const NewWorkspaceDialog: React.FC<NewWorkspaceDialogProps> = ({
                 setInputMethod={setPatientInputMethod}
                 url={patientUrl}
                 setUrl={setPatientUrl}
-                className={className} // Pass theme class down
+
               />
             </div>
           </div>
 
           {/* Action Buttons */}
           <div style={{
-              marginTop: '8px', // Reduced top margin
-              paddingTop: '16px', // Add padding above buttons
-              display: 'flex',
-              justifyContent: 'flex-end', // Align buttons to the right
-              gap: '12px', // Space between buttons
-              borderTop: `1px solid var(--border-color, #e5e7eb)` // Separator line above actions
-           }}>
+            marginTop: '8px', // Reduced top margin
+            paddingTop: '16px', // Add padding above buttons
+            display: 'flex',
+            justifyContent: 'flex-end', // Align buttons to the right
+            gap: '12px', // Space between buttons
+            borderTop: `1px solid var(--border-color, #e5e7eb)` // Separator line above actions
+          }}>
             {/* Cancel Button */}
             <button
               onClick={onClose}
               style={secondaryButtonStyle}
               onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = `var(--secondary-bg, #f5f5f5)`;
-                  e.currentTarget.style.borderColor = `var(--text-color-secondary, #6c757d)`;
-                  e.currentTarget.style.color = `var(--text-color, #000000)`;
+                e.currentTarget.style.backgroundColor = `var(--secondary-bg, #f5f5f5)`;
+                e.currentTarget.style.borderColor = `var(--text-color-secondary, #6c757d)`;
+                e.currentTarget.style.color = `var(--text-color, #000000)`;
               }}
               onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.borderColor = `var(--border-color, #cccccc)`;
-                  e.currentTarget.style.color = `var(--text-color-secondary, #6c757d)`;
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = `var(--border-color, #cccccc)`;
+                e.currentTarget.style.color = `var(--text-color-secondary, #6c757d)`;
               }}
             >
               Cancel

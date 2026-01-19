@@ -6,6 +6,7 @@ import { FileData } from '../components/types'; // Assuming this type exists
 type FileDataSetter = React.Dispatch<React.SetStateAction<FileData[]>>;
 
 // Define the props interface for MedicalUploader
+// Define the props interface for MedicalUploader
 interface MedicalUploaderProps {
   workspaceDetails: {
     llmPreference: 'offline' | 'online';
@@ -16,7 +17,6 @@ interface MedicalUploaderProps {
   // Add handlers for updating file lists
   onMedicalFilesChange: FileDataSetter;
   onPatientFilesChange: FileDataSetter;
-  className?: string; // For theme class ('light' or 'dark')
 }
 
 // Define the MedicalUploader functional component
@@ -25,8 +25,8 @@ const MedicalUploader: React.FC<MedicalUploaderProps> = ({
   onLLMPreferenceChange,
   onMedicalFilesChange,
   onPatientFilesChange,
-  className = 'light',
 }) => {
+
   // Destructure workspaceDetails for easier access
   const { llmPreference, medicalFiles, patientFiles } = workspaceDetails;
 
@@ -64,7 +64,7 @@ const MedicalUploader: React.FC<MedicalUploaderProps> = ({
 
   return (
     <div
-      className={className} // Apply theme class ('light' or 'dark')
+
       style={{
         padding: '20px',
         overflowY: 'auto',
@@ -148,7 +148,7 @@ const MedicalUploader: React.FC<MedicalUploaderProps> = ({
           setInputMethod={setMedicalInputMethod}
           url={medicalUrl}
           setUrl={setMedicalUrl}
-          className={className}
+
         />
         <UploadSection
           title="Uploaded Patient Documents"
@@ -158,7 +158,7 @@ const MedicalUploader: React.FC<MedicalUploaderProps> = ({
           setInputMethod={setPatientInputMethod}
           url={patientUrl}
           setUrl={setPatientUrl}
-          className={className}
+
         />
       </div>
     </div>
