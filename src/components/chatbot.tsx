@@ -1,7 +1,7 @@
 // import CustomButton from '@/shared/components/atoms/button/CustomButton';
 import { useWorkspace } from '../features/workspace/context/WorkspaceContext';
 import { useChatHistory, MessageType } from '../features/chat/context/ChatHistoryContext';
-import { Message, ArrowUpward, Stop } from '@mui/icons-material';
+import { Message } from '@mui/icons-material';
 import { ContentCopy as CopyIcon, Edit as EditIcon } from '@mui/icons-material';
 import ChatImage from './ChatImage/ChatImage';
 import {
@@ -10,7 +10,6 @@ import {
     Card,
     IconButton,
     Paper,
-    TextField,
     Typography,
     useTheme,
 } from '@mui/material';
@@ -195,63 +194,146 @@ interface ChatInputProps {
 
 const ChatInput: React.FC<ChatInputProps> = ({ input, setInput, handleSendMessage, loading }) => {
     const theme = useTheme();
+    const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+    const adjustHeight = React.useCallback((reset?: boolean) => {
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+        if (reset) {
+            textarea.style.height = '56px';
+            return;
+        }
+        textarea.style.height = '56px';
+        const newHeight = Math.max(56, Math.min(textarea.scrollHeight, 160));
+        textarea.style.height = `${newHeight}px`;
+    }, []);
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (input.trim()) {
+                handleSendMessage(e);
+                adjustHeight(true);
+            }
+        }
+    };
+
     return (
-        <Paper
-            component="form"
-            onSubmit={handleSendMessage}
-            elevation={3}
-            sx={{
-                p: '2px 4px',
-                display: 'flex',
-                alignItems: 'center',
-                width: '100%',
-                borderRadius: '24px', // Explicit pill shape
-                mb: 1,
-                border: `1px solid ${theme.palette.divider}`,
-                boxShadow: theme.shadows[1],
-                '&:hover': {
-                    boxShadow: theme.shadows[4],
-                },
-                transition: 'box-shadow 0.3s ease-in-out',
-            }}
-        >
-            <TextField
-                fullWidth
-                variant="standard"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
-                multiline
-                maxRows={4}
-                onKeyPress={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSendMessage(e);
-                    }
-                }}
-                InputProps={{
-                    disableUnderline: true,
-                    sx: {
-                        px: 2,
-                        py: 1.5,
-                        fontSize: '0.95rem'
-                    }
-                }}
-            />
-            <IconButton
-                type="submit"
-                disabled={loading || !input.trim()}
-                color="primary"
+        <Box sx={{ width: '100%', mb: 2, px: 2 }}>
+            <Paper
+                elevation={2}
                 sx={{
-                    p: '10px',
-                    mr: 0.5,
-                    alignSelf: 'flex-end',
-                    mb: 0.5
+                    display: 'flex',
+                    flexDirection: 'column',
+                    borderRadius: 3,
+                    border: `1px solid ${theme.palette.divider}`,
+                    bgcolor: theme.palette.background.paper,
+                    overflow: 'hidden',
+                    transition: 'box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out',
+                    '&:focus-within': {
+                        borderColor: theme.palette.primary.main,
+                        boxShadow: `0 0 0 2px ${theme.palette.primary.main}20`,
+                    },
                 }}
             >
-                {loading ? <Stop /> : <ArrowUpward />}
-            </IconButton>
-        </Paper>
+                <Box
+                    component="textarea"
+                    ref={textareaRef}
+                    value={input}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                        setInput(e.target.value);
+                        adjustHeight();
+                    }}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Ask me anything about the patient..."
+                    sx={{
+                        width: '100%',
+                        minHeight: '56px',
+                        maxHeight: '160px',
+                        px: 2,
+                        py: 1.5,
+                        border: 'none',
+                        outline: 'none',
+                        resize: 'none',
+                        bgcolor: 'transparent',
+                        color: theme.palette.text.primary,
+                        fontFamily: theme.typography.fontFamily,
+                        fontSize: '0.95rem',
+                        lineHeight: 1.5,
+                        '&::placeholder': {
+                            color: theme.palette.text.secondary,
+                            opacity: 0.7,
+                        },
+                    }}
+                />
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        px: 1.5,
+                        py: 1,
+                        borderTop: `1px solid ${theme.palette.divider}`,
+                        bgcolor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+                    }}
+                >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <IconButton size="small" sx={{ color: theme.palette.text.secondary }}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                            </svg>
+                        </IconButton>
+                    </Box>
+                    <IconButton
+                        onClick={(e) => {
+                            e.preventDefault();
+                            if (input.trim() && !loading) {
+                                handleSendMessage(e);
+                                adjustHeight(true);
+                            }
+                        }}
+                        disabled={loading || !input.trim()}
+                        sx={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: 2,
+                            bgcolor: input.trim() ? theme.palette.primary.main : theme.palette.action.disabledBackground,
+                            color: input.trim() ? theme.palette.primary.contrastText : theme.palette.text.disabled,
+                            transition: 'all 0.2s ease-in-out',
+                            '&:hover': {
+                                bgcolor: input.trim() ? theme.palette.primary.dark : theme.palette.action.disabledBackground,
+                            },
+                            '&.Mui-disabled': {
+                                bgcolor: theme.palette.action.disabledBackground,
+                                color: theme.palette.text.disabled,
+                            },
+                        }}
+                    >
+                        {loading ? (
+                            <Box
+                                sx={{
+                                    width: 20,
+                                    height: 20,
+                                    border: '2px solid currentColor',
+                                    borderTopColor: 'transparent',
+                                    borderRadius: '50%',
+                                    animation: 'spin 1s linear infinite',
+                                    '@keyframes spin': {
+                                        '0%': { transform: 'rotate(0deg)' },
+                                        '100%': { transform: 'rotate(360deg)' },
+                                    },
+                                }}
+                            />
+                        ) : (
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="12" y1="19" x2="12" y2="5" />
+                                <polyline points="5 12 12 5 19 12" />
+                            </svg>
+                        )}
+                    </IconButton>
+                </Box>
+            </Paper>
+        </Box>
     );
 };
 

@@ -1,49 +1,133 @@
-* {
-    padding: 0px;
-    box-sizing: border-box; /* Ensures padding doesn't affect element size */
+@import "tailwindcss";
+
+/* shadcn CSS Variables */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
   }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+* {
+  padding: 0px;
+  box-sizing: border-box;
+  /* Ensures padding doesn't affect element size */
+}
 
 /* Light Theme */
 .light {
-  --background-color: #f8fafc;      /* Slate 50 */
-  --text-color: #334155;            /* Slate 700 */
-  --text-color-secondary: #64748b; /* Slate 500 */
-  --border-color: #e2e8f0;          /* Slate 200 */
-  --button-bg: #3b82f6;             /* Blue 500 */
-  --button-text: #ffffff;           /* White */
-  --hover-bg: #2563eb;              /* Blue 600 */
-  --input-bg: #ffffff;              /* White */
-  --input-text: #334155;            /* Slate 700 */
-  --secondary-bg: #ffffff;          /* White */
-  --accent-color: #3b82f6;          /* Blue 500 */
-  --error-color: #ef4444;           /* Red 500 */
-  --success-color: #22c55e;         /* Green 500 */
-  --link-color: #3b82f6;            /* Blue 500 */
-  --disabled-bg: #e2e8f0;           /* Slate 200 */
-  --disabled-text: #94a3b8;         /* Slate 400 */
+  --background-color: #f8fafc;
+  /* Slate 50 */
+  --text-color: #334155;
+  /* Slate 700 */
+  --text-color-secondary: #64748b;
+  /* Slate 500 */
+  --border-color: #e2e8f0;
+  /* Slate 200 */
+  --button-bg: #3b82f6;
+  /* Blue 500 */
+  --button-text: #ffffff;
+  /* White */
+  --hover-bg: #2563eb;
+  /* Blue 600 */
+  --input-bg: #ffffff;
+  /* White */
+  --input-text: #334155;
+  /* Slate 700 */
+  --secondary-bg: #ffffff;
+  /* White */
+  --accent-color: #3b82f6;
+  /* Blue 500 */
+  --error-color: #ef4444;
+  /* Red 500 */
+  --success-color: #22c55e;
+  /* Green 500 */
+  --link-color: #3b82f6;
+  /* Blue 500 */
+  --disabled-bg: #e2e8f0;
+  /* Slate 200 */
+  --disabled-text: #94a3b8;
+  /* Slate 400 */
   --focus-ring-color: var(--accent-color);
   --focus-ring-color-light: rgba(59, 130, 246, 0.3);
 }
 
 /* Dark Theme */
 .dark {
-  --background-color: #0f172a;      /* Slate 900 */
-  --text-color: #f1f5f9;            /* Slate 100 */
-  --text-color-secondary: #94a3b8; /* Slate 400 */
-  --border-color: #334155;          /* Slate 700 */
-  --button-bg: #3b82f6;             /* Blue 500 */
-  --button-text: #ffffff;           /* White */
-  --hover-bg: #2563eb;              /* Blue 600 */
-  --button-hover-bg: #1e293b;       /* Slate 800 */
-  --input-bg: #1e293b;              /* Slate 800 */
-  --input-text: #f1f5f9;            /* Slate 100 */
-  --secondary-bg: #1e293b;          /* Slate 800 */
-  --accent-color: #3b82f6;          /* Blue 500 */
-  --error-color: #ef4444;           /* Red 500 */
-  --success-color: #22c55e;         /* Green 500 */
-  --link-color: #3b82f6;            /* Blue 500 */
-  --disabled-bg: #334155;           /* Slate 700 */
-  --disabled-text: #64748b;         /* Slate 500 */
+  --background-color: #0f172a;
+  /* Slate 900 */
+  --text-color: #f1f5f9;
+  /* Slate 100 */
+  --text-color-secondary: #94a3b8;
+  /* Slate 400 */
+  --border-color: #334155;
+  /* Slate 700 */
+  --button-bg: #3b82f6;
+  /* Blue 500 */
+  --button-text: #ffffff;
+  /* White */
+  --hover-bg: #2563eb;
+  /* Blue 600 */
+  --button-hover-bg: #1e293b;
+  /* Slate 800 */
+  --input-bg: #1e293b;
+  /* Slate 800 */
+  --input-text: #f1f5f9;
+  /* Slate 100 */
+  --secondary-bg: #1e293b;
+  /* Slate 800 */
+  --accent-color: #3b82f6;
+  /* Blue 500 */
+  --error-color: #ef4444;
+  /* Red 500 */
+  --success-color: #22c55e;
+  /* Green 500 */
+  --link-color: #3b82f6;
+  /* Blue 500 */
+  --disabled-bg: #334155;
+  /* Slate 700 */
+  --disabled-text: #64748b;
+  /* Slate 500 */
   --focus-ring-color: var(--accent-color);
   --focus-ring-color-light: rgba(59, 130, 246, 0.4);
 }
@@ -55,7 +139,8 @@ input[type='url']:focus {
   /* border-color: var(--focus-ring-color, #007bff); */
   /* Apply the outer glow effect */
   box-shadow: 0 0 6px 1px var(--focus-ring-color-light, rgba(0, 123, 255, 0.3));
-  outline: none; /* Ensure default outline is removed */
+  outline: none;
+  /* Ensure default outline is removed */
   /* Add transition for smoothness */
   transition: box-shadow 0.2s ease-in-out;
 }
@@ -63,7 +148,8 @@ input[type='url']:focus {
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .settings-upload-sections {
-    flex-direction: column; /* Stack upload sections vertically on smaller screens */
+    flex-direction: column;
+    /* Stack upload sections vertically on smaller screens */
   }
 
   /* You might need more adjustments for specific components */
@@ -71,11 +157,13 @@ input[type='url']:focus {
 
 /* Hide scrollbar for dialog content */
 .dialog-scroll-content {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
 }
 
 .dialog-scroll-content::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+  display: none;
+  /* Safari and Chrome */
 }
-
