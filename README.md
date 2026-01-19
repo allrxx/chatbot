@@ -2,6 +2,10 @@
 
 chatBot is a React-based AI assistant chatbot application built with TypeScript and Vite. It provides an interactive interface for users to ask questions and receive responses from an AI assistant. The project features a clean and responsive UI, leveraging modern web development tools and libraries.
 
+##Screenshots
+<img width="1919" height="949" alt="image" src="https://github.com/user-attachments/assets/28389050-692f-4831-b8da-79098cca7c11" />
+
+
 ## Features
 
 - **Interactive Chat Interface**: Users can send messages and receive responses from the AI assistant.
