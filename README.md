@@ -70,6 +70,9 @@ Follow these steps to set up the project locally:
 4. **Open in Browser**:
    Visit `http://localhost:5173` to view the application.
 
+5. **Install Ollama** : 
+    Make sure you have Ollama running, and modify the server file in frontend with the respective modal details.
+
 ## Scripts
 
 - `npm run dev`: Starts the development server.
@@ -89,7 +92,6 @@ Follow these steps to set up the project locally:
 
 ### 1. `MainScreen.tsx`
 - The main layout of the application, including the sidebar and chat interface.
-- Contains the "CAZE LABS" logo, "chatBot" subtitle, and a placeholder for document upload.
 
 ### 2. `chatbot.tsx`
 - Implements the chat interface where users can interact with the AI assistant.
@@ -131,7 +133,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - Built with [React](https://reactjs.org/) and [Vite](https://vitejs.dev/).
 - Icons sourced from the project's `assets` folder.
 
----
-
-Feel free to customize this `README.md` further to suit your needs!
 
